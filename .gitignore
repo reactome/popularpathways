@@ -1,0 +1,46 @@
+# intelliJ idea git ignore
+*.iml
+.idea
+
+*target*
+*.jar
+*.war
+*.ear
+*.class
+
+# eclipse specific git ignore
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# Custom
+ReactomeInteractorsCore.log
+
+#Header Footer
+footer.jsp
+header.jsp
+
+#Execution time file
+test.txt
+
+*.lic
+*.lic.xml
+
+*.log
