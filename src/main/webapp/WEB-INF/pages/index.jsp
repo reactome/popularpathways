@@ -55,7 +55,7 @@
         });
         // load data
         $.ajax({
-            url: ${pageContext.request.contextPath}"/result/2018-log-data-all-pathways-0205-only-hits.json",
+            url: ${pageContext.request.contextPath}"/result/${file}",
             dataType: "json",
             success: function (data) {
                 foamtree.set({
