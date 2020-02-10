@@ -55,7 +55,7 @@
         });
         // load data
         $.ajax({
-            url: ${pageContext.request.contextPath}"/result/${file}",
+            url: ${pageContext.request.contextPath}"/results/${file}",
             dataType: "json",
             success: function (data) {
                 foamtree.set({

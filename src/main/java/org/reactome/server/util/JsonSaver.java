@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class SaveToJsonFile {
+public class JsonSaver {
 
     private ObjectMapper mapper = new ObjectMapper();
 

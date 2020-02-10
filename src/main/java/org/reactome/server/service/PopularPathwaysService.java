@@ -4,12 +4,11 @@ import org.reactome.server.model.FoamtreeFactory;
 import org.reactome.server.model.FoamtreeGenerator;
 import org.reactome.server.model.data.Foamtree;
 import org.reactome.server.util.LogDataCSVParser;
-import org.reactome.server.util.SaveToJsonFile;
+import org.reactome.server.util.JsonSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +24,7 @@ public class PopularPathwaysService {
     @Autowired
     private LogDataCSVParser logDataCSVParser;
     @Autowired
-    private SaveToJsonFile saveToJsonFile;
+    private JsonSaver jsonSaver;
 
     private String inputFilePath = "src/main/resources/log-files/HSA-hits-2018.csv";
     private String outputPath = "src/main/webapp/resources/results/test.json";
@@ -35,7 +34,7 @@ public class PopularPathwaysService {
         List<Foamtree> foamtrees = foamtreeFactory.getFoamtrees();
         Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(inputFilePath);
         foamtreesWithLogData = foamtreeGenerator.getResults(inputFileResult, foamtrees);
-        saveToJsonFile.writeToFile(outputPath, foamtreesWithLogData);
+        jsonSaver.writeToFile(outputPath, foamtreesWithLogData);
     }
     
     private static File[] getFileList(String dirPath) {
