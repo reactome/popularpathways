@@ -8,14 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-@Component
+
 public class JsonSaver {
 
-    private ObjectMapper mapper = new ObjectMapper();
-
-    public void writeToFile(String filePath, List<Foamtree> foamtrees) throws IOException {
-        File file = new File(filePath);
+    public void writeToFile(File file, List<Foamtree> foamtrees) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(file, foamtrees);
-        //return file;
     }
 }

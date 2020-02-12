@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static java.util.Calendar.YEAR;
 
 @Component
 public class FileUploadService {
@@ -18,11 +17,11 @@ public class FileUploadService {
     @Autowired
     PopularPathwaysService popularPathwaysService;
 
-    public void saveToServer(MultipartFile file) throws IOException {
+    public void saveLogFileToServer(MultipartFile file, int year) throws IOException {
         // get the directory to store file ...../input
         String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayLogFolder();
         if (!file.isEmpty()) {
-            File dir = new File(UPLOADED_FOLDER + "/" + YEAR);
+            File dir = new File(UPLOADED_FOLDER + "/" + year);
             if (!dir.exists())
                 dir.mkdirs();
 

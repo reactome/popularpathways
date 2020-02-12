@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: cgong
@@ -65,17 +66,27 @@
                 });
             }
         });
+
+        window.addEventListener("resize", (function() {
+            var timeout;
+            return function() {
+                window.clearTimeout(timeout);
+                timeout = window.setTimeout(foamtree.resize, 300);
+            };
+        })());
     });
+
+
 </script>
 <div id="visualization"></div>
 
 
-<h3 style="color:red">${fileSuccess}</h3>
-<form method="POST" action="${pageContext.request.contextPath}/upload" enctype="multipart/form-data">
-    File to upload: <input type="file" name="file"><br/>
-    Year of log file:<input type="date" name="date"><br/>
-    Submit:<input type="submit" value="Upload File">
-</form>
+
+<h3>Year: ${year}</h3>
+
+
+<a href="/upload">click to upload</a>
+
 
 </body>
 </html>

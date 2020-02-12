@@ -39,6 +39,8 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
+    <mvc:view-controller path="/upload" view-name="uploadlog"/>
+
     <mvc:resources mapping="/**" location="/resources/" />
 
     <task:annotation-driven />
