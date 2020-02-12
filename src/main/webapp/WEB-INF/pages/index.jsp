@@ -12,7 +12,7 @@
     <style>
         body, html {
             position: relative;
-            height: 100%;
+            height: 90%;
             margin: 0;
         }
 
@@ -68,6 +68,14 @@
     });
 </script>
 <div id="visualization"></div>
-<%--${objectName}--%>
+
+
+<h3 style="color:red">${fileSuccess}</h3>
+<form method="POST" action="${pageContext.request.contextPath}/upload" enctype="multipart/form-data">
+    File to upload: <input type="file" name="file"><br/>
+    Year of log file:<input type="date" name="date"><br/>
+    Submit:<input type="submit" value="Upload File">
+</form>
+
 </body>
 </html>

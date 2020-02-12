@@ -1,12 +1,11 @@
 package org.reactome.server.model;
 
 import org.reactome.server.model.data.Foamtree;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
-@Component
+
 public class FoamtreeGenerator {
 
     public List<Foamtree> getResults(Map inputFileResult, List<Foamtree> foamtrees) {

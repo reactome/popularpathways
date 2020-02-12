@@ -16,5 +16,6 @@ public class JsonSaver {
     public void writeToFile(String filePath, List<Foamtree> foamtrees) throws IOException {
         File file = new File(filePath);
         mapper.writeValue(file, foamtrees);
+        //return file;
     }
 }
