@@ -8,9 +8,10 @@ import java.util.Map;
 
 public class FoamtreeGenerator {
 
+    //todo wired
     public List<Foamtree> getResults(Map inputFileResult, List<Foamtree> foamtrees) {
         List<Foamtree> foamtreesWithHits = addHitsToFoamtrees(inputFileResult, foamtrees);
-        List<Foamtree> foamtreesWithWeight = addWeightToFoamtrees(inputFileResult, foamtreesWithHits);
+        List<Foamtree> foamtreesWithWeight = sumFoamtreesWeight(foamtreesWithHits);
         return foamtreesWithWeight;
     }
 
