@@ -13,14 +13,14 @@
     <style>
         body, html {
             position: relative;
-            height: 90%;
+            height: 95%;
             margin: 0;
         }
 
         /** Set some preferred visualization size, but cap it to the maximum screen size */
         #visualization {
             width: 100%;
-            height: 800px;
+            height: 100%;
             max-width: 100%;
             max-height: 100%;
         }
@@ -37,6 +37,8 @@
         var foamtree = new CarrotSearchFoamTree({
             // Identifier of the HTML element defined above
             id: "visualization",
+
+           // layout: "ordered",
             // Color of the outline stroke for the selected groups
             groupSelectionOutlineColor: "#E86365"
         });
@@ -81,12 +83,9 @@
 <div id="visualization"></div>
 
 
-
 <h3>Year: ${year}</h3>
 
-
-<a href="/upload">click to upload</a>
-
+<a href="${pageContext.request.contextPath}/upload">click to upload</a>
 
 </body>
 </html>
