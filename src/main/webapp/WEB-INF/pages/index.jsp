@@ -58,17 +58,23 @@
         });
 
         // load data
-        $.ajax({
-            url: ${pageContext.request.contextPath}"/results/${file}",
-            dataType: "json",
-            success: function (data) {
-                foamtree.set({
-                    dataObject: {
-                        groups: data
-                    }
-                });
+        foamtree.set({
+            dataObject: {
+                groups: ${data}
             }
         });
+
+<%--/*        $.ajax({--%>
+<%--            url: ${pageContext.request.contextPath}"/results/${file}",--%>
+<%--            dataType: "json",--%>
+<%--            success: function (data) {--%>
+<%--                foamtree.set({--%>
+<%--                    dataObject: {--%>
+<%--                        groups: data--%>
+<%--                    }--%>
+<%--                });--%>
+<%--            }--%>
+<%--        });*/--%>
 
         window.addEventListener("resize", (function() {
             var timeout;

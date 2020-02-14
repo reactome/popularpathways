@@ -17,8 +17,8 @@ public class FileUploadService {
     PopularPathwaysService popularPathwaysService;
 
     public void saveLogFileToServer(MultipartFile file, int year) throws IOException {
-        // get the directory to store file ...../input
-        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder();
+        // get the directory to store file .....
+        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "input";
         if (!file.isEmpty()) {
             File dir = new File(UPLOADED_FOLDER + "/" + year);
             if (!dir.exists())
