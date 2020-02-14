@@ -1,6 +1,6 @@
 package org.reactome.server.controller;
 
-import org.reactome.server.model.data.Foamtree;
+import org.apache.commons.io.FileUtils;
 import org.reactome.server.service.FileUploadService;
 import org.reactome.server.service.PopularPathwaysService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +11,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.util.Calendar.YEAR;
@@ -39,29 +40,19 @@ public class FileUploadController {
         // save log file to input
         fileUploadService.saveLogFileToServer(file, year);
 
-        // save json file
+        // get the saved file
         File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(Integer.toString(year));
-
-//        String jsonPath = popularPathwaysService.getPopularPathwayFolder() + "/" + "json";
-//        String foamtreeFileSuffix = "json";
-
-//        ModelAndView mav = new ModelAndView("redirect:/");
-//        mav.addObject("file", jsonFoamtreeFile.getName());
-//        //mav.addObject("file", popularPathwaysService.getFileName(outputPath,"2020",foamtreeFileSuffix));
-//        mav.addObject("fileSuccess", "File successfully uploaded!");
-//        mav.addObject("year", year);
 
 //        RedirectView redirect = new RedirectView("/success/");
 //        redirect.setExposeModelAttributes(false);
 //        return redirect;
 
-
-/*        ObjectMapper mapper = new ObjectMapper();
-        InputStream is = Test.class.getResourceAsStream("/test.json");
-        testObj = mapper.readValue(is, Test.class);*/
+        File jsonFile = new File(jsonFoamtreeFile.getAbsolutePath());
+        String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
 
         model.addAttribute("file", jsonFoamtreeFile.getName());
         model.addAttribute("fileSuccess", "File successfully uploaded!");
+        model.addAttribute("data", data);
         model.addAttribute("year", year);
 
         return new ModelAndView("index");
