@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -32,8 +33,6 @@ public class PopularPathwaysService {
         return popularPathwayLogFolder;
     }
 
-    private String outputPath = "src/main/webapp/resources/results";
-
     public PopularPathwaysService() throws IOException {
     }
 
@@ -46,12 +45,13 @@ public class PopularPathwaysService {
         String logFileSuffix = "csv";
         String dirLog = popularPathwayLogFolder + "/" + year;
         String inputFileName = getFileName(dirLog, year, logFileSuffix);
-        Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(popularPathwayLogFolder + "/" + year + "/" + inputFileName);
+        Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(dirLog + "/" + inputFileName);
 
         FoamtreeGenerator foamtreeGenerator = new FoamtreeGenerator();
         List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(inputFileResult, foamtrees);
 
         JsonSaver jsonSaver = new JsonSaver();
+        String outputPath = "src/main/webapp/resources/results";
         File jsonFoamtreeFile = new File(outputPath + "/" + "HSA-hits-" + year + ".json");
         jsonSaver.writeToFile(jsonFoamtreeFile, foamtreesWithLogData);
 

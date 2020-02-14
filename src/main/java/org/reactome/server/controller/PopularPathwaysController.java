@@ -20,7 +20,6 @@ public class PopularPathwaysController {
 
     private String outputPath = "src/main/webapp/resources/results";
     private String foamtreeFileSuffix = "json";
-    private String defaultYear = "2017";
 
     //File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(defaultYear);
 
@@ -29,8 +28,13 @@ public class PopularPathwaysController {
 
     @RequestMapping(value = "/")
     public ModelAndView getIndex() throws IOException {
+
+        String defaultYear = "2019";
+        File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(defaultYear);
+
         ModelAndView mav = new ModelAndView("index");
-        mav.addObject("file", popularPathwaysService.getFileName(outputPath, defaultYear, foamtreeFileSuffix));
+       // mav.addObject("file", popularPathwaysService.getFileName(outputPath, defaultYear, foamtreeFileSuffix));
+        mav.addObject("file", jsonFoamtreeFile.getName());
         mav.addObject("year", defaultYear);
         return mav;
     }

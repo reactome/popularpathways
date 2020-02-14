@@ -26,60 +26,6 @@
     </style>
 </head>
 <body>
-<!-- Include FoamTree implementation. -->
-<script src="foamtree/carrotsearch.foamtree.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script>
-    // Initialize FoamTree after the whole page loads to make sure
-    // the element has been laid out and has non-zero dimensions.
-    window.addEventListener("load", function () {
-        var foamtree = new CarrotSearchFoamTree({
-            // Identifier of the HTML element defined above
-            id: "visualization",
-
-            // layout: "ordered",
-            // Color of the outline stroke for the selected groups
-            groupSelectionOutlineColor: "#E86365"
-        });
-
-        // add hits value to label
-        foamtree.set({
-            groupLabelDecorator: function (opts, props, vars) {
-                vars.labelText = vars.labelText + " [" + props.group.hits + " " + props.group.weight + "]";
-            }
-        });
-
-        foamtree.set({
-            groupColorDecorator: function (opts, props, vars) {
-                vars.groupColor = "#58C3E5";
-                vars.labelColor = "#000";
-            }
-        });
-        // load data
-        $.ajax({
-            url: ${pageContext.request.contextPath}"/results/${file}",
-            dataType: "json",
-            success: function (data) {
-                foamtree.set({
-                    dataObject: {
-                        groups: data
-                    }
-                });
-            }
-        });
-
-        window.addEventListener("resize", (function() {
-            var timeout;
-            return function() {
-                window.clearTimeout(timeout);
-                timeout = window.setTimeout(foamtree.resize, 300);
-            };
-        })());
-    });
-
-
-</script>
-<div id="visualization"></div>
 
 <h3 style="color:red">${fileSuccess}</h3>
 <form method="POST" action="${pageContext.request.contextPath}/uploadlog" enctype="multipart/form-data">

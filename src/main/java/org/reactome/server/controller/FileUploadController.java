@@ -1,5 +1,6 @@
 package org.reactome.server.controller;
 
+import org.reactome.server.model.data.Foamtree;
 import org.reactome.server.service.FileUploadService;
 import org.reactome.server.service.PopularPathwaysService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class FileUploadController {
     @Autowired
     FileUploadService fileUploadService;
 
+
     @RequestMapping(value = "/uploadlog", method = RequestMethod.POST)
     public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("date") Date date) throws IOException {
 
@@ -37,11 +39,24 @@ public class FileUploadController {
         // save json file
         File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(Integer.toString(year));
 
+        String outputPath = "src/main/webapp/resources/results";
+        String foamtreeFileSuffix = "json";
+
+
+        System.out.println(jsonFoamtreeFile.length());
+
+        System.out.println("1");
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("file", jsonFoamtreeFile.getName());
+        //mav.addObject("file", popularPathwaysService.getFileName(outputPath,"2020",foamtreeFileSuffix));
+        System.out.println("2");
         mav.addObject("fileSuccess", "File successfully uploaded!");
+        System.out.println("3");
         mav.addObject("year", year);
+        System.out.println("4");
+
         return mav;
+
     }
 
     // date binding

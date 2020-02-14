@@ -20,7 +20,7 @@
         /** Set some preferred visualization size, but cap it to the maximum screen size */
         #visualization {
             width: 100%;
-            height: 100%;
+            height: 90%;
             max-width: 100%;
             max-height: 100%;
         }
@@ -82,10 +82,11 @@
 </script>
 <div id="visualization"></div>
 
-
 <h3>Year: ${year}</h3>
 
-<a href="${pageContext.request.contextPath}/upload">click to upload</a>
+<h3 style="color:red">${fileSuccess}</h3>
+
+<h2><a href="${pageContext.request.contextPath}/upload">click to upload</a></h2>
 
 </body>
 </html>
