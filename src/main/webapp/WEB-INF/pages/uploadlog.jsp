@@ -9,21 +9,6 @@
 <html>
 <head>
     <title>Upload</title>
-    <style>
-        body, html {
-            position: relative;
-            height: 95%;
-            margin: 0;
-        }
-
-        /** Set some preferred visualization size, but cap it to the maximum screen size */
-        #visualization {
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-        }
-    </style>
 </head>
 <body>
 
