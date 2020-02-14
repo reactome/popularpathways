@@ -17,12 +17,6 @@ public class PopularPathwaysController {
     @Autowired
     PopularPathwaysService popularPathwaysService;
 
-
-    private String outputPath = "src/main/webapp/resources/results";
-    private String foamtreeFileSuffix = "json";
-
-    //File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(defaultYear);
-
     public PopularPathwaysController() {
     }
 

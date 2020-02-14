@@ -6,10 +6,12 @@ import org.reactome.server.service.PopularPathwaysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
 import java.util.*;
@@ -27,35 +29,42 @@ public class FileUploadController {
 
 
     @RequestMapping(value = "/uploadlog", method = RequestMethod.POST)
-    public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("date") Date date) throws IOException {
+    public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("date") Date date, Model model) throws IOException {
 
         // get year only
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
         int year = calendar.get(YEAR);
 
+        // save log file to input
         fileUploadService.saveLogFileToServer(file, year);
 
         // save json file
         File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(Integer.toString(year));
 
-        String outputPath = "src/main/webapp/resources/results";
-        String foamtreeFileSuffix = "json";
+//        String jsonPath = popularPathwaysService.getPopularPathwayFolder() + "/" + "json";
+//        String foamtreeFileSuffix = "json";
+
+//        ModelAndView mav = new ModelAndView("redirect:/");
+//        mav.addObject("file", jsonFoamtreeFile.getName());
+//        //mav.addObject("file", popularPathwaysService.getFileName(outputPath,"2020",foamtreeFileSuffix));
+//        mav.addObject("fileSuccess", "File successfully uploaded!");
+//        mav.addObject("year", year);
+
+//        RedirectView redirect = new RedirectView("/success/");
+//        redirect.setExposeModelAttributes(false);
+//        return redirect;
 
 
-        System.out.println(jsonFoamtreeFile.length());
+/*        ObjectMapper mapper = new ObjectMapper();
+        InputStream is = Test.class.getResourceAsStream("/test.json");
+        testObj = mapper.readValue(is, Test.class);*/
 
-        System.out.println("1");
-        ModelAndView mav = new ModelAndView("index");
-        mav.addObject("file", jsonFoamtreeFile.getName());
-        //mav.addObject("file", popularPathwaysService.getFileName(outputPath,"2020",foamtreeFileSuffix));
-        System.out.println("2");
-        mav.addObject("fileSuccess", "File successfully uploaded!");
-        System.out.println("3");
-        mav.addObject("year", year);
-        System.out.println("4");
+        model.addAttribute("file", jsonFoamtreeFile.getName());
+        model.addAttribute("fileSuccess", "File successfully uploaded!");
+        model.addAttribute("year", year);
 
-        return mav;
+        return new ModelAndView("index");
 
     }
 

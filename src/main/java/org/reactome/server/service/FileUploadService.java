@@ -1,6 +1,5 @@
 package org.reactome.server.service;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +18,7 @@ public class FileUploadService {
 
     public void saveLogFileToServer(MultipartFile file, int year) throws IOException {
         // get the directory to store file ...../input
-        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayLogFolder();
+        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder();
         if (!file.isEmpty()) {
             File dir = new File(UPLOADED_FOLDER + "/" + year);
             if (!dir.exists())

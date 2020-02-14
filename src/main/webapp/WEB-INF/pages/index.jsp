@@ -56,6 +56,7 @@
                 vars.labelColor = "#000";
             }
         });
+
         // load data
         $.ajax({
             url: ${pageContext.request.contextPath}"/results/${file}",
@@ -78,10 +79,9 @@
         })());
     });
 
-
 </script>
 <div id="visualization"></div>
-
+<h4>${file}</h4>
 <h3>Year: ${year}</h3>
 
 <h3 style="color:red">${fileSuccess}</h3>

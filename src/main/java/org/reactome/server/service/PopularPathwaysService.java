@@ -25,12 +25,12 @@ public class PopularPathwaysService {
     @Autowired
     private LogDataCSVParser logDataCSVParser;
 
-    @Value("${popularpathway.log.folder}")
-    private String popularPathwayLogFolder;
+    @Value("${popularpathway.folder}")
+    private String popularPathwayFolder;
 
 
-    public String getPopularPathwayLogFolder() {
-        return popularPathwayLogFolder;
+    public String getPopularPathwayFolder() {
+        return popularPathwayFolder;
     }
 
     public PopularPathwaysService() throws IOException {
@@ -43,22 +43,22 @@ public class PopularPathwaysService {
         List<Foamtree> foamtrees = foamtreeFactory.getFoamtrees();
 
         String logFileSuffix = "csv";
-        String dirLog = popularPathwayLogFolder + "/" + year;
+        String dirLog = popularPathwayFolder + "/" + "input" + "/" + year;
         String inputFileName = getFileName(dirLog, year, logFileSuffix);
         Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(dirLog + "/" + inputFileName);
 
+        // todo do not generate FOAMTREE data every time. Use md5 checksum...
         FoamtreeGenerator foamtreeGenerator = new FoamtreeGenerator();
         List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(inputFileResult, foamtrees);
 
         JsonSaver jsonSaver = new JsonSaver();
-        String outputPath = "src/main/webapp/resources/results";
+        String outputPath = popularPathwayFolder + "/" + "json";
         File jsonFoamtreeFile = new File(outputPath + "/" + "HSA-hits-" + year + ".json");
         jsonSaver.writeToFile(jsonFoamtreeFile, foamtreesWithLogData);
 
         return jsonFoamtreeFile;
     }
 
-    // todo rewrite
     public static File[] getFileList(String dirPath, String year, String suffix) {
 
         File dir = new File(dirPath);

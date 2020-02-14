@@ -16,7 +16,7 @@
     <context:property-placeholder location="classpath:/service.properties" ignore-unresolvable="true" />
 
     <!-- Standard xml based mvc config-->
-    <mvc:annotation-driven>
+    <mvc:annotation-driven ignore-default-model-on-redirect="true">
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
                 <property name="writeAcceptCharset" value="false" />
