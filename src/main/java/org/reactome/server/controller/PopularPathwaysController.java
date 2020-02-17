@@ -2,6 +2,7 @@ package org.reactome.server.controller;
 
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.reactome.server.service.PopularPathwaysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,13 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class PopularPathwaysController {
@@ -18,7 +26,36 @@ public class PopularPathwaysController {
     @Autowired
     PopularPathwaysService popularPathwaysService;
 
-    public PopularPathwaysController() {
+    // AVAILABLE_FILES
+    public static Map<File, File> AVAILABLE_FILES;
+
+    public PopularPathwaysController() throws IOException {
+        getAvailableFiles();
+    }
+
+    public static Map<File, File> cacheFiles() throws IOException {
+
+        Map<File, File> fileMap = new HashMap<>();
+
+        //String csvPath = popularPathwaysService.getPopularPathwayFolder()+ "/" + "input";
+        String csvPath = "/Users/reactome/Reactome/popularpathways/input";
+        File logDir = new File(csvPath);
+        //String jsonPath = popularPathwaysService.getPopularPathwayFolder() + "/" + "json";
+        String jsonPath = "/Users/reactome/Reactome/popularpathways/json";
+        File jsonDir = new File(jsonPath);
+
+        List<File> csvFiles = fetchFiles(logDir, "csv");
+        List<File> jsonFiles = fetchFiles(jsonDir, "json");
+
+        // is there a clearer way?
+        for (File csvFile : csvFiles) {
+            for (File jsonFile : jsonFiles) {
+                    if (FilenameUtils.getBaseName(csvFile.getName()).equals(FilenameUtils.getBaseName(jsonFile.getName()))) {
+                    fileMap.put(csvFile, jsonFile);
+                }
+            }
+        }
+        return fileMap;
     }
 
     @RequestMapping(value = "/")
@@ -35,5 +72,28 @@ public class PopularPathwaysController {
         mav.addObject("year", defaultYear);
         return mav;
     }
-}
 
+    public static Map<File, File> getAvailableFiles() throws IOException {
+        if (AVAILABLE_FILES == null) {
+            AVAILABLE_FILES = cacheFiles();
+        }
+        return AVAILABLE_FILES;
+    }
+
+
+    public static List<File> fetchFiles(File dir, String suffix) {
+        List<File> filesList = new ArrayList<>();
+        if (dir == null || dir.listFiles() == null) {
+            return filesList;
+        }
+        for (File file : dir.listFiles()) {
+            if (file.isFile() && file.getName().endsWith("." + suffix)) {
+                filesList.add(file);
+            } else {
+                filesList.addAll(fetchFiles(file, suffix));
+            }
+        }
+        return filesList;
+    }
+
+}
