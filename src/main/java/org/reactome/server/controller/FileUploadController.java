@@ -11,6 +11,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 
 import java.io.*;
@@ -28,10 +30,10 @@ public class FileUploadController {
     @Autowired
     FileUploadService fileUploadService;
 
-
     @RequestMapping(value = "/uploadlog", method = RequestMethod.POST)
-    public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("date") Date date, Model model) throws IOException {
+    public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("date") Date date) throws IOException {
 
+        Map<File, File> allFiles = PopularPathwaysController.getAvailableFiles();
         // get year only
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -39,24 +41,23 @@ public class FileUploadController {
 
         // save log file to input
         fileUploadService.saveLogFileToServer(file, year);
+        //fileUploadService.saveLogFileToServerWithCheck(file, year);
 
         // get the saved file
         File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(Integer.toString(year));
+        //File jsonFoamtreeFile = popularPathwaysService.getFoamtreeFileWithCheck(Integer.toString(year));
 
-//        RedirectView redirect = new RedirectView("/success/");
-//        redirect.setExposeModelAttributes(false);
-//        return redirect;
-
-        File jsonFile = new File(jsonFoamtreeFile.getAbsolutePath());
+        //File jsonFile = new File(jsonFoamtreeFile.getAbsolutePath());
         String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
 
-        model.addAttribute("file", jsonFoamtreeFile.getName());
-        model.addAttribute("fileSuccess", "File successfully uploaded!");
-        model.addAttribute("data", data);
-        model.addAttribute("year", year);
 
-        return new ModelAndView("index");
+        ModelAndView mav = new ModelAndView("index");
+        mav.addObject("file", jsonFoamtreeFile.getName());
+        mav.addObject("fileSuccess", "File successfully uploaded!");
+        mav.addObject("data", data);
+        mav.addObject("year", year);
 
+        return mav;
     }
 
     // date binding
