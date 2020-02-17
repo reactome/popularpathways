@@ -25,15 +25,10 @@ public class PopularPathwaysController {
     public ModelAndView getIndex() throws IOException {
 
         String defaultYear = "2019";
+
         File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(defaultYear);
-
-       /* ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String json = ow.writeValueAsString(jsonFoamtreeFile);*/
-
-        File jsonFile = new File(jsonFoamtreeFile.getAbsolutePath());
-
-        //  Apache Commons IO
-        String data = FileUtils.readFileToString(jsonFile, String.valueOf(StandardCharsets.UTF_8));
+        //  Apache Commons IO convert file to String
+        String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
 
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("data", data);
