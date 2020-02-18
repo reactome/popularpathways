@@ -35,13 +35,11 @@ public class FileUploadController {
         calendar.setTime(date);
         int year = calendar.get(YEAR);
 
-
         // get foamtreeJosnFile if doesn't exists then create it
-        File jsonFoamtreeFile = popularPathwaysService.getJsonFoamtreeFile(file,year);
+        File jsonFoamtreeFile = popularPathwaysService.getJsonFoamtreeFile(file, year);
 
         // convert file to String
         String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
-
 
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("file", jsonFoamtreeFile.getName());
