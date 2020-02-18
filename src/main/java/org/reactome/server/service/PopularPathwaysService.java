@@ -92,7 +92,6 @@ public class PopularPathwaysService {
 
         FoamtreeFactory foamtreeFactory = new FoamtreeFactory(tlpService);
         List<Foamtree> foamtrees = foamtreeFactory.getFoamtrees();
-        System.out.println(file.getAbsolutePath());
         Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(file.getAbsolutePath());
 
         FoamtreeGenerator foamtreeGenerator = new FoamtreeGenerator();
@@ -119,7 +118,6 @@ public class PopularPathwaysService {
 
         File uploadFile = fileUploadService.convertFile(file);
         String uploadFileCode = DigestUtils.md5Hex(new FileInputStream(uploadFile));
-
 
         for (Map.Entry<File, File> entry : allFiles.entrySet()) {
             String checkSum = DigestUtils.md5Hex(new FileInputStream(entry.getKey()));

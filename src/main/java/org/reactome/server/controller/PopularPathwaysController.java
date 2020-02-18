@@ -22,7 +22,6 @@ public class PopularPathwaysController {
     @Autowired
     PopularPathwaysService popularPathwaysService;
 
-    // AVAILABLE_FILES
     public static Map<File, File> AVAILABLE_FILES;
 
     public PopularPathwaysController() throws IOException {
@@ -57,7 +56,6 @@ public class PopularPathwaysController {
 
     @RequestMapping(value = "/")
     public ModelAndView getIndex() throws IOException {
-
 
         Calendar calendar = new GregorianCalendar();
         String currentYear = String.valueOf(calendar.get(YEAR));
