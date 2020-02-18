@@ -30,7 +30,7 @@ public class PopularPathwaysService {
     private LogDataCSVParser logDataCSVParser;
 
     @Autowired
-    private  FileUploadService fileUploadService;
+    private FileUploadService fileUploadService;
 
     @Value("${popularpathway.folder}")
     private String popularPathwayFolder;
@@ -77,7 +77,7 @@ public class PopularPathwaysService {
         File jsonFoamtreeFile = null;
 
         // NPE
-        File csvFile = new File(popularPathwayFolder + "/" + "log" + "/" + year +  "/" + "HSA-hits-" + year + ".csv");
+        File csvFile = new File(popularPathwayFolder + "/" + "log" + "/" + year + "/" + "HSA-hits-" + year + ".csv");
 
         Map<File, File> allFiles = PopularPathwaysController.getAvailableFiles();
 
@@ -158,7 +158,6 @@ public class PopularPathwaysService {
                 fileName = file.getName();
             }
         }
-
         return fileName;
     }
 }
