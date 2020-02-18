@@ -33,12 +33,13 @@ public class PopularPathwaysController {
         getAvailableFiles();
     }
 
+    //todo path
     public static Map<File, File> cacheFiles() throws IOException {
 
         Map<File, File> fileMap = new HashMap<>();
 
-        //String csvPath = popularPathwaysService.getPopularPathwayFolder()+ "/" + "input";
-        String csvPath = "/Users/reactome/Reactome/popularpathways/input";
+        //String csvPath = popularPathwaysService.getPopularPathwayFolder()+ "/" + "log";
+        String csvPath = "/Users/reactome/Reactome/popularpathways/log";
         File logDir = new File(csvPath);
         //String jsonPath = popularPathwaysService.getPopularPathwayFolder() + "/" + "json";
         String jsonPath = "/Users/reactome/Reactome/popularpathways/json";
@@ -50,7 +51,7 @@ public class PopularPathwaysController {
         // is there a clearer way?
         for (File csvFile : csvFiles) {
             for (File jsonFile : jsonFiles) {
-                    if (FilenameUtils.getBaseName(csvFile.getName()).equals(FilenameUtils.getBaseName(jsonFile.getName()))) {
+                if (FilenameUtils.getBaseName(csvFile.getName()).equals(FilenameUtils.getBaseName(jsonFile.getName()))) {
                     fileMap.put(csvFile, jsonFile);
                 }
             }
@@ -63,7 +64,10 @@ public class PopularPathwaysController {
 
         String defaultYear = "2019";
 
-        File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(defaultYear);
+
+        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFile(defaultYear);
+
+        //File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(defaultYear);
         //  Apache Commons IO convert file to String
         String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
 

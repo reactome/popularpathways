@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 
 @Component
@@ -18,9 +15,10 @@ public class FileUploadService {
 
     public void saveLogFileToServer(MultipartFile file, int year) throws IOException {
         // get the directory to store file .....
-        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "input";
+        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "log";
         if (!file.isEmpty()) {
-            File dir = new File(UPLOADED_FOLDER + "/" + year);
+            String csvFilePath = UPLOADED_FOLDER + "/" + year;
+            File dir = new File(csvFilePath);
             if (!dir.exists())
                 dir.mkdirs();
 
@@ -30,12 +28,11 @@ public class FileUploadService {
             stream.write(bytes);
             stream.flush();
             stream.close();
-            // return serverFile;
         }
     }
 
     //convert MuitipartFile to file: no need
-    private File convertFile(MultipartFile file) throws IOException {
+    public File convertFile(MultipartFile file) throws IOException {
         File convertFile = new File(file.getOriginalFilename());
         convertFile.createNewFile();
         FileOutputStream fos = new FileOutputStream(convertFile);
@@ -43,4 +40,5 @@ public class FileUploadService {
         fos.close();
         return convertFile;
     }
+
 }

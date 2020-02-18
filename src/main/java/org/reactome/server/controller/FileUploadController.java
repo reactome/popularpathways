@@ -6,13 +6,10 @@ import org.reactome.server.service.PopularPathwaysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 
 import java.io.*;
@@ -33,21 +30,16 @@ public class FileUploadController {
     @RequestMapping(value = "/uploadlog", method = RequestMethod.POST)
     public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("date") Date date) throws IOException {
 
-        Map<File, File> allFiles = PopularPathwaysController.getAvailableFiles();
         // get year only
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
         int year = calendar.get(YEAR);
 
-        // save log file to input
-        fileUploadService.saveLogFileToServer(file, year);
-        //fileUploadService.saveLogFileToServerWithCheck(file, year);
 
-        // get the saved file
-        File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(Integer.toString(year));
-        //File jsonFoamtreeFile = popularPathwaysService.getFoamtreeFileWithCheck(Integer.toString(year));
+        // get foamtreeJosnFile if doesn't exists then create it
+        File jsonFoamtreeFile = popularPathwaysService.getJsonFoamtreeFile(file,year);
 
-        //File jsonFile = new File(jsonFoamtreeFile.getAbsolutePath());
+        // convert file to String
         String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
 
 

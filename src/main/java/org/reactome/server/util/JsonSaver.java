@@ -2,7 +2,6 @@ package org.reactome.server.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.reactome.server.model.data.Foamtree;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
