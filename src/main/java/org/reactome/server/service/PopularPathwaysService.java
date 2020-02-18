@@ -1,11 +1,13 @@
 package org.reactome.server.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.reactome.server.controller.PopularPathwaysController;
 import org.reactome.server.model.FoamtreeFactory;
 import org.reactome.server.model.FoamtreeGenerator;
 import org.reactome.server.model.data.Foamtree;
 import org.reactome.server.graph.service.TopLevelPathwayService;
+import org.reactome.server.util.FileHelper;
 import org.reactome.server.util.LogDataCSVParser;
 import org.reactome.server.util.JsonSaver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class PopularPathwaysService {
 
     @Autowired
     private FileUploadService fileUploadService;
+
+    @Autowired
+    FileHelper fileHelper;
 
     @Value("${popularpathway.folder}")
     private String popularPathwayFolder;
@@ -88,12 +93,12 @@ public class PopularPathwaysService {
     }
 
     //todo rewrite 0217
-    public File generateFoamtreeFile(File file, String year) throws IOException {
+    public File generateFoamtreeFile(File logFile, String year) throws IOException {
+
+        Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(logFile.getAbsolutePath());
 
         FoamtreeFactory foamtreeFactory = new FoamtreeFactory(tlpService);
         List<Foamtree> foamtrees = foamtreeFactory.getFoamtrees();
-        Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(file.getAbsolutePath());
-
         FoamtreeGenerator foamtreeGenerator = new FoamtreeGenerator();
         List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(inputFileResult, foamtrees);
         JsonSaver jsonSaver = new JsonSaver();
@@ -126,10 +131,10 @@ public class PopularPathwaysService {
 
         if (allFilesChecksum.containsKey(uploadFileCode)) {
             jsonFoamtreeFile = allFilesChecksum.get(uploadFileCode);
-            return jsonFoamtreeFile;
         } else {
-            fileUploadService.saveLogFileToServer(file, year);
-            jsonFoamtreeFile = generateFoamtreeFile(uploadFile, Integer.toString(year));
+            //todo
+            File csvFile = fileUploadService.saveLogFileToServerV2(file, year);
+            jsonFoamtreeFile = generateFoamtreeFile(csvFile, Integer.toString(year));
         }
         return jsonFoamtreeFile;
     }
@@ -138,12 +143,11 @@ public class PopularPathwaysService {
 
         File dir = new File(dirPath);
 
-        File[] fileList = dir.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
+        return dir.listFiles(new FilenameFilter() {
+            public boolean accept(File dir1, String name) {
                 return name.endsWith(year + "." + suffix);
             }
         });
-        return fileList;
     }
 
     public String getFileName(String dirPath, String year, String suffix) throws IOException {
