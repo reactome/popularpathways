@@ -12,13 +12,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static java.util.Calendar.YEAR;
 
 @Controller
 public class PopularPathwaysController {
@@ -62,18 +58,20 @@ public class PopularPathwaysController {
     @RequestMapping(value = "/")
     public ModelAndView getIndex() throws IOException {
 
-        String defaultYear = "2019";
 
+        Calendar calendar = new GregorianCalendar();
+        String currentYear = String.valueOf(calendar.get(YEAR));
 
-        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFile(defaultYear);
-
+        // todo it is wrong
+        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFile(currentYear);
         //File jsonFoamtreeFile = popularPathwaysService.generateAndSaveFoamtreeFile(defaultYear);
+
         //  Apache Commons IO convert file to String
         String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
 
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("data", data);
-        mav.addObject("year", defaultYear);
+        mav.addObject("year", currentYear);
         return mav;
     }
 
@@ -84,7 +82,7 @@ public class PopularPathwaysController {
         return AVAILABLE_FILES;
     }
 
-
+    // iterate the dir to find all files
     public static List<File> fetchFiles(File dir, String suffix) {
         List<File> filesList = new ArrayList<>();
         if (dir == null || dir.listFiles() == null) {
@@ -99,5 +97,4 @@ public class PopularPathwaysController {
         }
         return filesList;
     }
-
 }
