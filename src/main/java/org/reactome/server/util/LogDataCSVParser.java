@@ -17,10 +17,6 @@ public class LogDataCSVParser {
 
     private Map<String, Integer> inputFileResult = new HashMap<>();
 
-    public Map<String, Integer> getInputFileResult() {
-        return  inputFileResult;
-    }
-
     public Map<String, Integer> CSVParser(String filepath) throws IOException {
         Map<String, Integer> inputFileResult = new HashMap<>();
         Reader reader = Files.newBufferedReader(Paths.get(filepath));

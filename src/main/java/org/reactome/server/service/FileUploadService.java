@@ -10,8 +10,12 @@ import java.io.*;
 @Component
 public class FileUploadService {
 
+    private PopularPathwaysService popularPathwaysService;
+
     @Autowired
-    PopularPathwaysService popularPathwaysService;
+    public void setPopularPathwaysService(PopularPathwaysService popularPathwaysService) {
+        this.popularPathwaysService = popularPathwaysService;
+    }
 
     public File saveLogFileToServer(MultipartFile file, int year) throws IOException {
 

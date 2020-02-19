@@ -21,11 +21,12 @@ import static java.util.Calendar.YEAR;
 @Controller
 public class FileUploadController {
 
-    @Autowired
-    PopularPathwaysService popularPathwaysService;
+    private PopularPathwaysService popularPathwaysService;
 
     @Autowired
-    FileUploadService fileUploadService;
+    public void setPopularPathwaysService(PopularPathwaysService popularPathwaysService) {
+        this.popularPathwaysService = popularPathwaysService;
+    }
 
     @RequestMapping(value = "/uploadlog", method = RequestMethod.POST)
     public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("date") Date date) throws IOException {

@@ -23,18 +23,27 @@ import java.util.*;
 @Component
 public class PopularPathwaysService {
 
-    @Autowired
     private TopLevelPathwayService tlpService;
-
-    @Autowired
     private LogDataCSVParser logDataCSVParser;
+    private FileUploadService fileUploadService;
+    private static String popularPathwayFolder;
+    public Map<File, File> AVAILABLE_FILES;
 
     @Autowired
-    private FileUploadService fileUploadService;
+    public void setTlpService(TopLevelPathwayService tlpService) {
+        this.tlpService = tlpService;
+    }
 
-    private static String popularPathwayFolder;
+    @Autowired
+    public void setLogDataCSVParser(LogDataCSVParser logDataCSVParser) {
+        this.logDataCSVParser = logDataCSVParser;
+    }
 
-    public Map<File, File> AVAILABLE_FILES;
+    @Autowired
+    public void setFileUploadService(FileUploadService fileUploadService) {
+        this.fileUploadService = fileUploadService;
+    }
+
 
     public String getPopularPathwayFolder() {
         return popularPathwayFolder;

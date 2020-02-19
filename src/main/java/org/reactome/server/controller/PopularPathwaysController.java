@@ -18,8 +18,12 @@ import static java.util.Calendar.YEAR;
 @Controller
 public class PopularPathwaysController {
 
+    private PopularPathwaysService popularPathwaysService;
+
     @Autowired
-    PopularPathwaysService popularPathwaysService;
+    public void setPopularPathwaysService(PopularPathwaysService popularPathwaysService) {
+        this.popularPathwaysService = popularPathwaysService;
+    }
 
     public PopularPathwaysController() {
     }
