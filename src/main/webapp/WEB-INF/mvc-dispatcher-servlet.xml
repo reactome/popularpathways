@@ -41,8 +41,6 @@
 
     <mvc:view-controller path="/upload" view-name="uploadlog"/>
 
-    <mvc:view-controller path="/test" view-name="test"/>
-
     <mvc:resources mapping="/**" location="/resources/" />
 
     <task:annotation-driven />

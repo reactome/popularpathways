@@ -13,29 +13,11 @@ public class FileUploadService {
     @Autowired
     PopularPathwaysService popularPathwaysService;
 
-    public void saveLogFileToServer(MultipartFile file, int year) throws IOException {
-        // get the directory to store file .....
-        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "log";
-        if (!file.isEmpty()) {
-            String csvFilePath = UPLOADED_FOLDER + "/" + year;
-            File dir = new File(csvFilePath);
-            if (!dir.exists())
-                dir.mkdirs();
-
-            byte[] bytes = file.getBytes();
-            File serverFile = new File(dir + "/" + file.getOriginalFilename());
-            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-            stream.write(bytes);
-            stream.flush();
-            stream.close();
-        }
-    }
-
-    public File saveLogFileToServerV2(MultipartFile file, int year) throws IOException {
+    public File saveLogFileToServer(MultipartFile file, int year) throws IOException {
 
         File serverFile = null;
-        // get the directory to store file .....
         String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "log";
+
         if (!file.isEmpty()) {
             String csvFilePath = UPLOADED_FOLDER + "/" + year;
             File dir = new File(csvFilePath);
