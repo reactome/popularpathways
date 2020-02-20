@@ -38,14 +38,41 @@ public class FileUploadService {
         return serverFile;
     }
 
-    //convert MuitipartFile to file: no need
-    public File convertFile(MultipartFile file) throws IOException {
+    public File saveTempFileToServer(MultipartFile multipartFile) throws IOException {
+
+        File serverFile = null;
+        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "temp";
+
+        if (!multipartFile.isEmpty()) {
+            String csvFilePath = UPLOADED_FOLDER;
+            File dir = new File(csvFilePath);
+            if (!dir.exists())
+                dir.mkdirs();
+
+            byte[] bytes = multipartFile.getBytes();
+            serverFile = new File(dir + "/" + multipartFile.getOriginalFilename());
+            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+            stream.write(bytes);
+            stream.flush();
+            stream.close();
+        }
+        return serverFile;
+    }
+
+
+    //convert MuitipartFile to file
+    public File convertFile(MultipartFile file, int year) throws IOException {
+
         File convertFile = new File(file.getOriginalFilename());
+
+        System.out.println(convertFile.getAbsolutePath());
         convertFile.createNewFile();
         FileOutputStream fos = new FileOutputStream(convertFile);
         fos.write(file.getBytes());
         fos.close();
+        System.out.println(convertFile.getAbsolutePath());
         return convertFile;
+
     }
 
 }

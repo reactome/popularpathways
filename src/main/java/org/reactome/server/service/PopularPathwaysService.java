@@ -80,8 +80,12 @@ public class PopularPathwaysService {
 
         Map<String, File> allFilesChecksum = new HashMap<>();
 
-        File convertUploadFile = fileUploadService.convertFile(uploadFile);
-        String uploadFileCode = DigestUtils.md5Hex(new FileInputStream(convertUploadFile));
+        //todo wrong, for now save the upload file to temp and then delete
+        //File convertUploadFile = fileUploadService.convertFile(uploadFile, year);
+        File convertUploadTempFile = fileUploadService.saveTempFileToServer(uploadFile);
+        String uploadFileCode = DigestUtils.md5Hex(new FileInputStream(convertUploadTempFile));
+        convertUploadTempFile.delete();
+
 
         for (Map.Entry<File, File> entry : allFiles.entrySet()) {
             String checkSum = DigestUtils.md5Hex(new FileInputStream(entry.getKey()));
@@ -131,10 +135,19 @@ public class PopularPathwaysService {
         String jsonPath = popularPathwayFolder + "/" + "json";
         File jsonDir = new File(jsonPath);
 
+        File folder = new File(popularPathwayFolder);
+
         //todo call once
         Collection<File> csvFiles = FileUtils.listFiles(logDir, new String[]{"csv"} , true);
         Collection<File> jsonFiles = FileUtils.listFiles(jsonDir, new String[]{"json"} , true);
 
+ //       Collection<File> csvAndJsonFile = FileUtils.listFiles(folder, new String[]{"json"} , true);
+ //       for(File files : csvAndJsonFile){
+//            if (FilenameUtils.getBaseName(files.getName()).equals(FilenameUtils.getBaseName(files.getName()))) {
+//                fileMap.put(csvFile, jsonFile);
+//                break;
+//            }
+  //      }
 
         //.stream().filter(file -> Boolean.parseBoolean(FilenameUtils.getExtension("csv"))).collect(Collectors.toList());
         // is there a clearer way?
