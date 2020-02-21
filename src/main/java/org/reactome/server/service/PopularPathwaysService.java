@@ -78,7 +78,7 @@ public class PopularPathwaysService {
 
         Map<File, File> allFiles = getAvailableFiles();
 
-        Map<String, File> allFilesChecksum = new HashMap<>();
+        Map<String, File> checksumCsvFiles = new HashMap<>();
 
         //todo wrong, for now save the upload file to temp and then delete
         //File convertUploadFile = fileUploadService.convertFile(uploadFile, year);
@@ -89,11 +89,11 @@ public class PopularPathwaysService {
 
         for (Map.Entry<File, File> entry : allFiles.entrySet()) {
             String checkSum = DigestUtils.md5Hex(new FileInputStream(entry.getKey()));
-            allFilesChecksum.put(checkSum, entry.getValue());
+            checksumCsvFiles.put(checkSum, entry.getValue());
         }
 
-        if (allFilesChecksum.containsKey(uploadFileCode)) {
-            jsonFoamtreeFile = allFilesChecksum.get(uploadFileCode);
+        if (checksumCsvFiles.containsKey(uploadFileCode)) {
+            jsonFoamtreeFile = checksumCsvFiles.get(uploadFileCode);
         } else {
             File csvFile = fileUploadService.saveLogFileToServer(uploadFile, year);
             jsonFoamtreeFile = generateFoamtreeFile(csvFile, Integer.toString(year));
@@ -130,7 +130,6 @@ public class PopularPathwaysService {
         Map<File, File> fileMap = new HashMap<>();
 
         String csvPath = popularPathwayFolder + "/" + "log";
-        // String csvPath ="/Users/reactome/Reactome/popularpathways"+ "/" + "log";
         File logDir = new File(csvPath);
         String jsonPath = popularPathwayFolder + "/" + "json";
         File jsonDir = new File(jsonPath);
@@ -141,13 +140,13 @@ public class PopularPathwaysService {
         Collection<File> csvFiles = FileUtils.listFiles(logDir, new String[]{"csv"} , true);
         Collection<File> jsonFiles = FileUtils.listFiles(jsonDir, new String[]{"json"} , true);
 
- //       Collection<File> csvAndJsonFile = FileUtils.listFiles(folder, new String[]{"json"} , true);
- //       for(File files : csvAndJsonFile){
+//        Collection<File> csvAndJsonFile = FileUtils.listFiles(folder, new String[]{"json"} , true);
+//        for(File files : csvAndJsonFile){
 //            if (FilenameUtils.getBaseName(files.getName()).equals(FilenameUtils.getBaseName(files.getName()))) {
 //                fileMap.put(csvFile, jsonFile);
 //                break;
 //            }
-  //      }
+//        }
 
         //.stream().filter(file -> Boolean.parseBoolean(FilenameUtils.getExtension("csv"))).collect(Collectors.toList());
         // is there a clearer way?
