@@ -1,5 +1,6 @@
 package org.reactome.server.service;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,41 +39,33 @@ public class FileUploadService {
         return serverFile;
     }
 
-    public File saveTempFileToServer(MultipartFile multipartFile) throws IOException {
-
-        File serverFile = null;
-        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "temp";
-
-        if (!multipartFile.isEmpty()) {
-            String csvFilePath = UPLOADED_FOLDER;
-            File dir = new File(csvFilePath);
-            if (!dir.exists())
-                dir.mkdirs();
-
-            byte[] bytes = multipartFile.getBytes();
-            serverFile = new File(dir + "/" + multipartFile.getOriginalFilename());
-            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-            stream.write(bytes);
-            stream.flush();
-            stream.close();
+    /**
+     * The multipart file is the one that the user submit and we get the checksum ....
+     *
+     * @param multipartFile the file from the Form sent by the user
+     * @return
+     * @throws IOException
+     */
+    public String getUploadFileMd5Code(MultipartFile multipartFile) throws IOException {
+        String md5Ret = null;
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            md5Ret = DigestUtils.md5Hex(multipartFile.getInputStream());
         }
-        return serverFile;
+        return md5Ret;
     }
-
 
     //convert MuitipartFile to file
-    public File convertFile(MultipartFile file, int year) throws IOException {
-
-        File convertFile = new File(file.getOriginalFilename());
-
-        System.out.println(convertFile.getAbsolutePath());
-        convertFile.createNewFile();
-        FileOutputStream fos = new FileOutputStream(convertFile);
-        fos.write(file.getBytes());
-        fos.close();
-        System.out.println(convertFile.getAbsolutePath());
-        return convertFile;
-
-    }
-
+//    public File convertFile(MultipartFile file, int year) throws IOException {
+//
+//        File convertFile = new File(file.getOriginalFilename());
+//
+//        System.out.println(convertFile.getAbsolutePath());
+//        convertFile.createNewFile();
+//        FileOutputStream fos = new FileOutputStream(convertFile);
+//        fos.write(file.getBytes());
+//        fos.close();
+//        System.out.println(convertFile.getAbsolutePath());
+//        return convertFile;
+//
+//    }
 }
