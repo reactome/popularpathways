@@ -46,7 +46,8 @@
         // add hits value to label
         foamtree.set({
             groupLabelDecorator: function (opts, props, vars) {
-                vars.labelText = vars.labelText + " [" + props.group.hits + " " + props.group.weight + "]";
+                vars.labelText = vars.labelText + " ["  + props.group.weight + "]";
+               // vars.labelText = vars.labelText + " [" + props.group.hits + " " + props.group.weight + "]";
             }
         });
 
@@ -64,6 +65,7 @@
             }
         });
 
+        //todo delete it
 <%--/*        $.ajax({--%>
 <%--            url: ${pageContext.request.contextPath}"/results/${file}",--%>
 <%--            dataType: "json",--%>
