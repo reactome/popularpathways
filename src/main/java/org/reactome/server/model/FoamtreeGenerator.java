@@ -10,9 +10,10 @@ public class FoamtreeGenerator {
 
     //todo wired
     public List<Foamtree> getResults(Map inputFileResult, List<Foamtree> foamtrees) {
-        List<Foamtree> foamtreesWithHits = addHitsToFoamtrees(inputFileResult, foamtrees);
-        List<Foamtree> foamtreesWithWeight = sumFoamtreesWeight(foamtreesWithHits);
-        return foamtreesWithWeight;
+        //List<Foamtree> foamtreesWithHits = addHitsToFoamtrees(inputFileResult, foamtrees);
+        //List<Foamtree> foamtreesWithWeight = sumFoamtreesWeight(foamtreesWithHits);
+        List<Foamtree> foamtreesAddWeight =addWeightToFoamtrees(inputFileResult, foamtrees);
+        return foamtreesAddWeight;
     }
 
     /**
