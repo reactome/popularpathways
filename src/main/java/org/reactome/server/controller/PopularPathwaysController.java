@@ -32,7 +32,7 @@ public class PopularPathwaysController {
     public ModelAndView getIndex() throws IOException {
 
         Calendar calendar = new GregorianCalendar();
-        String currentYear = String.valueOf(calendar.get(YEAR));
+        String currentYear = String.valueOf(calendar.get(YEAR) - 1);
 
         // todo it is wrong
         File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileFromMap(currentYear);
