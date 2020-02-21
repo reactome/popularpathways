@@ -3,10 +3,13 @@ package org.reactome.server.service;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.reactome.server.graph.exception.CustomQueryException;
+import org.reactome.server.graph.service.AdvancedDatabaseObjectService;
 import org.reactome.server.model.FoamtreeFactory;
 import org.reactome.server.model.FoamtreeGenerator;
 import org.reactome.server.model.data.Foamtree;
 import org.reactome.server.graph.service.TopLevelPathwayService;
+import org.reactome.server.model.data.PathwayDateInfo;
 import org.reactome.server.util.LogDataCSVParser;
 import org.reactome.server.util.JsonSaver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import java.util.*;
 public class PopularPathwaysService {
 
     private TopLevelPathwayService tlpService;
+    private AdvancedDatabaseObjectService advancedDatabaseObjectService;
     private LogDataCSVParser logDataCSVParser;
     private FileUploadService fileUploadService;
     private static String popularPathwayFolder;
@@ -32,6 +36,11 @@ public class PopularPathwaysService {
     @Autowired
     public void setTlpService(TopLevelPathwayService tlpService) {
         this.tlpService = tlpService;
+    }
+
+    @Autowired
+    public void setAdvancedDatabaseObjectService(AdvancedDatabaseObjectService advancedDatabaseObjectService) {
+        this.advancedDatabaseObjectService = advancedDatabaseObjectService;
     }
 
     @Autowired
@@ -52,8 +61,8 @@ public class PopularPathwaysService {
     public PopularPathwaysService(@Value("${popularpathway.folder}") String folder) throws IOException {
         popularPathwayFolder = folder;
         getAvailableFiles();
+        custom();
     }
-
 
     // find a foamtree json file when give a year
     public File findFoamtreeFileFromMap(String year) throws IOException {
@@ -80,12 +89,7 @@ public class PopularPathwaysService {
 
         Map<String, File> checksumCsvFiles = new HashMap<>();
 
-        //todo wrong, for now save the upload file to temp and then delete
-        //File convertUploadFile = fileUploadService.convertFile(uploadFile, year);
-        File convertUploadTempFile = fileUploadService.saveTempFileToServer(uploadFile);
-        String uploadFileCode = DigestUtils.md5Hex(new FileInputStream(convertUploadTempFile));
-        convertUploadTempFile.delete();
-
+        String uploadFileCode = fileUploadService.getUploadFileMd5Code(uploadFile);
 
         for (Map.Entry<File, File> entry : allFiles.entrySet()) {
             String checkSum = DigestUtils.md5Hex(new FileInputStream(entry.getKey()));
@@ -140,14 +144,6 @@ public class PopularPathwaysService {
         Collection<File> csvFiles = FileUtils.listFiles(logDir, new String[]{"csv"} , true);
         Collection<File> jsonFiles = FileUtils.listFiles(jsonDir, new String[]{"json"} , true);
 
-//        Collection<File> csvAndJsonFile = FileUtils.listFiles(folder, new String[]{"json"} , true);
-//        for(File files : csvAndJsonFile){
-//            if (FilenameUtils.getBaseName(files.getName()).equals(FilenameUtils.getBaseName(files.getName()))) {
-//                fileMap.put(csvFile, jsonFile);
-//                break;
-//            }
-//        }
-
         //.stream().filter(file -> Boolean.parseBoolean(FilenameUtils.getExtension("csv"))).collect(Collectors.toList());
         // is there a clearer way?
         for (File csvFile : csvFiles) {
@@ -168,6 +164,20 @@ public class PopularPathwaysService {
             AVAILABLE_FILES = cacheFiles();
         }
         return AVAILABLE_FILES;
+    }
+
+    public void custom()  {
+        try {
+            String query = "MATCH (p:Pathway{speciesName:\"Homo sapiens\"})<-[:authored]-(a:InstanceEdit)\n" +
+                    "OPTIONAL MATCH (p)<-[:reviewed]-(r:InstanceEdit)\n" +
+                    "RETURN p.stId AS stId, max(a.dateTime) AS lastAuthored, max(r.dateTime) AS lastReviewed";
+            Collection<PathwayDateInfo> pdis = advancedDatabaseObjectService.getCustomQueryResults(PathwayDateInfo.class, query);
+            for (PathwayDateInfo pdi : pdis) {
+                System.out.println(pdi.getStId());
+            }
+        }catch (CustomQueryException e) {
+            e.printStackTrace();
+        }
     }
 
     // todo unused
