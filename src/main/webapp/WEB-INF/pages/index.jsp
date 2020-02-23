@@ -47,14 +47,31 @@
         foamtree.set({
             groupLabelDecorator: function (opts, props, vars) {
                 vars.labelText = vars.labelText + " ["  + props.group.weight + "]";
-               // vars.labelText = vars.labelText + " [" + props.group.hits + " " + props.group.weight + "]";
             }
         });
 
         foamtree.set({
             groupColorDecorator: function (opts, props, vars) {
-                vars.groupColor = "#58C3E5";
                 vars.labelColor = "#000";
+
+                var age = props.group.age;
+                switch (true) {
+                    case age === 0:
+                        vars.groupColor = "#DDA0DD";
+                        console.log("age = 0");
+                        break;
+                    case age >= 1 && age < 10:
+                        vars.groupColor = "#BA55D3";
+                        break;
+                    case age >= 10 && age < 15:
+                        vars.groupColor = "#9400D3";
+                        break;
+                    case age >= 15 && age < 20:
+                        vars.groupColor = "#8B008B";
+                        break;
+                    default:
+                        vars.groupColor = "#58C3E5";
+                }
             }
         });
 
@@ -64,19 +81,6 @@
                 groups: ${data}
             }
         });
-
-        //todo delete it
-<%--/*        $.ajax({--%>
-<%--            url: ${pageContext.request.contextPath}"/results/${file}",--%>
-<%--            dataType: "json",--%>
-<%--            success: function (data) {--%>
-<%--                foamtree.set({--%>
-<%--                    dataObject: {--%>
-<%--                        groups: data--%>
-<%--                    }--%>
-<%--                });--%>
-<%--            }--%>
-<%--        });*/--%>
 
         window.addEventListener("resize", (function() {
             var timeout;
