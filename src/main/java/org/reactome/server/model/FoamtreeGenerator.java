@@ -9,15 +9,17 @@ import java.util.Map;
 public class FoamtreeGenerator {
 
     //todo wired
-    public List<Foamtree> getResults(Map inputFileResult, List<Foamtree> foamtrees) {
+    public List<Foamtree> getResults(Map inputFileResult,Map age, List<Foamtree> foamtrees) {
         //List<Foamtree> foamtreesWithHits = addHitsToFoamtrees(inputFileResult, foamtrees);
         //List<Foamtree> foamtreesWithWeight = sumFoamtreesWeight(foamtreesWithHits);
-        List<Foamtree> foamtreesAddWeight =addWeightToFoamtrees(inputFileResult, foamtrees);
-        return foamtreesAddWeight;
+        List<Foamtree> foamtreesAddWeight = addWeightToFoamtrees(inputFileResult, foamtrees);
+        List<Foamtree> foamtreesAllDate = addAgeToFoamtrees(age, foamtreesAddWeight);
+
+        return foamtreesAllDate;
     }
 
     /**
-     * Add hits value to foamtree, execute only one Foamtree
+     * add hits value to foamtree, execute only one Foamtree
      *
      * @param inputFileResult
      * @param foamtree
@@ -41,7 +43,7 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * Add hits value to Foamtree list
+     * add hits value to Foamtree list
      *
      * @param inputFileResult
      * @param foamtrees
@@ -53,6 +55,11 @@ public class FoamtreeGenerator {
         return foamtrees;
     }
 
+    /**
+     * add weight value to foamtree, execute only one Foamtree
+     * @param inputFileResult
+     * @param foamtree
+     */
     private void addWeightoFoamtree(Map<String, Integer> inputFileResult, Foamtree foamtree) {
 
         if (!inputFileResult.isEmpty()) {
@@ -69,6 +76,12 @@ public class FoamtreeGenerator {
         }
     }
 
+    /**
+     * add weight value to Foamtree list
+     * @param inputFileResult
+     * @param foamtrees
+     * @return
+     */
     private List<Foamtree> addWeightToFoamtrees(Map<String, Integer> inputFileResult, List<Foamtree> foamtrees) {
         for (Foamtree foamtree : foamtrees) {
             addWeightoFoamtree(inputFileResult, foamtree);
@@ -76,9 +89,42 @@ public class FoamtreeGenerator {
         return foamtrees;
     }
 
+    /**
+     * add age value to foamtree, execute only one foamtree
+     * @param age
+     * @param foamtree
+     */
+    private void addAgeToFoamtree(Map<String, Integer> age, Foamtree foamtree) {
+
+        if (!age.isEmpty()) {
+            if (age.containsKey(foamtree.getStId())) {
+                foamtree.setAge(age.get(foamtree.getStId()));
+            } else {
+                foamtree.setAge(20);
+            }
+            if (foamtree.getGroups() != null) {
+                for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
+                    addWeightoFoamtree(age, foamtreeInGroups);
+                }
+            }
+        }
+    }
 
     /**
-     * Sum sub groups weight to parent,execute only one Foamtree
+     * add age value to Foamtree list
+     * @param age
+     * @param foamtrees
+     * @return
+     */
+    private List<Foamtree> addAgeToFoamtrees(Map<String, Integer> age, List<Foamtree> foamtrees) {
+        for (Foamtree foamtree : foamtrees) {
+            addAgeToFoamtree(age, foamtree);
+        }
+        return foamtrees;
+    }
+
+    /**
+     * sum sub groups weight to parent,execute only one foamtree
      *
      * @param foamtree
      */
@@ -99,7 +145,7 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * Sum sub groups weight to parent in foamtree list
+     * sum sub groups weight to parent in foamtree list
      *
      * @param foamtrees
      */
