@@ -14,6 +14,8 @@ public class Foamtree {
     private int weight;
     private String url;
     private int hits;
+    private int age;
+
     private List<Foamtree> groups;
 
     public Foamtree() {
@@ -72,6 +74,14 @@ public class Foamtree {
 
     public void setHits(int hits) {
         this.hits = hits;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public List<Foamtree> getGroups() {
