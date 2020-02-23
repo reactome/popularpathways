@@ -35,7 +35,7 @@ public class PopularPathwaysController {
         String currentYear = String.valueOf(calendar.get(YEAR) - 1);
 
         // todo it is wrong
-        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileFromMap(currentYear);
+        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileFromMapByYear(currentYear);
 
         //  Apache Commons IO convert file to String
         String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
