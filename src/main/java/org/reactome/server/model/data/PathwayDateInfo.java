@@ -11,7 +11,19 @@ public class PathwayDateInfo {
     private String lastAuthored;
     private String lastReviewed;
 
+    public String getReleasedDate() {
+        return releasedDate;
+    }
+
+    public void setReleasedDate(String releasedDate) {
+        this.releasedDate = releasedDate;
+    }
+
+    private String releasedDate;
+
     private Integer age;
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     public String getStId() {
         return stId;
@@ -37,14 +49,29 @@ public class PathwayDateInfo {
         this.lastReviewed = lastReviewed;
     }
 
-    public Integer getAge(String lastAuthored, String lastReviewed) {
+    public Integer getAge(String lastAuthored, String lastReviewed, String releasedDate) {
 
-        LocalDate finalDate;
+        LocalDate finalDate = null;
 
         //2006-10-10 13:07:07.0 ; reviewedDate is 2007-11-08 20:39:37.0
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
-        if (lastReviewed != null && !lastReviewed.isEmpty()) {
+        // lastAuthored and lastReviewed are null
+        if (lastAuthored == null && lastReviewed == null) {
+            //return null;
+            finalDate = LocalDate.parse(releasedDate, formatter);
+        }
+
+        if (lastAuthored != null && lastReviewed == null) {
+            finalDate = LocalDate.parse(lastAuthored, formatter);
+        }
+
+        if (lastReviewed != null && !lastReviewed.isEmpty() && lastAuthored == null) {
+            finalDate = LocalDate.parse(lastReviewed, formatter);
+
+        }
+
+        if (lastReviewed != null && !lastReviewed.isEmpty() &&
+                lastAuthored != null && !lastAuthored.isEmpty()) {
             LocalDate authored = LocalDate.parse(lastAuthored, formatter);
             LocalDate reviewed = LocalDate.parse(lastReviewed, formatter);
 
@@ -53,8 +80,6 @@ public class PathwayDateInfo {
             } else {
                 finalDate = authored;
             }
-        } else {
-            finalDate = LocalDate.parse(lastAuthored, formatter);
         }
 
         LocalDate start = LocalDate.of(finalDate.getYear(), finalDate.getMonth(), finalDate.getDayOfMonth());
