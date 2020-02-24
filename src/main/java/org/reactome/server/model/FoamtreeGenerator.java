@@ -2,6 +2,7 @@ package org.reactome.server.model;
 
 import org.reactome.server.model.data.Foamtree;
 
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -99,15 +100,37 @@ public class FoamtreeGenerator {
         if (!age.isEmpty()) {
             if (age.containsKey(foamtree.getStId())) {
                 foamtree.setAge(age.get(foamtree.getStId()));
-            } else {
-                foamtree.setAge(20);
             }
+
             if (foamtree.getGroups() != null) {
                 for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
-                    addWeightoFoamtree(age, foamtreeInGroups);
+                    addAgeToFoamtree(age, foamtreeInGroups);
                 }
             }
         }
+
+        // write to a csv file
+//        String eol = System.getProperty("line.separator");
+//        try (Writer writer = new FileWriter("pathwayAge.csv")) {
+//            for (Map.Entry<String, Integer> entry : age.entrySet()) {
+//                if (entry.getValue() == -1) {
+//                    writer.append(entry.getKey())
+//                            .append(',')
+//                            // .append(Character.highSurrogate(entry.getValue()))
+//                            .append(eol);
+//                }
+//            }
+//        } catch (IOException ex) {
+//            ex.printStackTrace(System.err);
+//        }
+
+
+//        for (Map.Entry<String, Integer> entry : age.entrySet()){
+//            if(entry.getValue() == -1){
+//                //System.out.println("stId is " + entry.getKey() + " , age is " + entry.getValue());
+//                System.out.println(entry.getKey());
+//            }
+//        }
     }
 
     /**
