@@ -2,22 +2,57 @@ package org.reactome.server.model;
 
 import org.reactome.server.model.data.Foamtree;
 
-import java.io.*;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class FoamtreeGenerator {
 
     //todo wired
     public List<Foamtree> getResults(Map inputFileResult,Map age, List<Foamtree> foamtrees) {
-        //List<Foamtree> foamtreesWithHits = addHitsToFoamtrees(inputFileResult, foamtrees);
-        //List<Foamtree> foamtreesWithWeight = sumFoamtreesWeight(foamtreesWithHits);
-        List<Foamtree> foamtreesAddWeight = addWeightToFoamtrees(inputFileResult, foamtrees);
+
+        List<Foamtree> foamtreeClean = removeDuplicatedFoamtrees(foamtrees);
+        List<Foamtree> foamtreesAddWeight = addWeightToFoamtrees(inputFileResult, foamtreeClean);
+       // List<Foamtree> foamtreesAddWeight = addAgeAsWeightToFoamtrees(age, foamtreeClean);
         List<Foamtree> foamtreesAllDate = addAgeToFoamtrees(age, foamtreesAddWeight);
 
         return foamtreesAllDate;
     }
+
+    /**
+     * remove duplicated sub-pathways in Foamtree group, execute only one Foamtree
+     * @param foamtree
+     * @return
+     */
+    private Foamtree removeDuplicatedFoamtree( Foamtree foamtree){
+
+        if (foamtree.getGroups() != null) {
+            List<Foamtree> removeDuplicated = foamtree.getGroups().stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+            foamtree.setGroups(removeDuplicated);
+
+            for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
+                removeDuplicatedFoamtree(foamtreeInGroups);
+            }
+        }
+        return  foamtree;
+    }
+
+    /**
+     * remove duplicated pathways in Foamtree list
+     * @param foamtrees
+     * @return
+     */
+    private List<Foamtree> removeDuplicatedFoamtrees(List<Foamtree> foamtrees){
+
+        for (Foamtree foamtree : foamtrees) {
+            removeDuplicatedFoamtree(foamtree);
+        }
+        return foamtrees;
+    }
+
 
     /**
      * add hits value to foamtree, execute only one Foamtree
@@ -108,29 +143,6 @@ public class FoamtreeGenerator {
                 }
             }
         }
-
-        // write to a csv file
-//        String eol = System.getProperty("line.separator");
-//        try (Writer writer = new FileWriter("pathwayAge.csv")) {
-//            for (Map.Entry<String, Integer> entry : age.entrySet()) {
-//                if (entry.getValue() == -1) {
-//                    writer.append(entry.getKey())
-//                            .append(',')
-//                            // .append(Character.highSurrogate(entry.getValue()))
-//                            .append(eol);
-//                }
-//            }
-//        } catch (IOException ex) {
-//            ex.printStackTrace(System.err);
-//        }
-
-
-//        for (Map.Entry<String, Integer> entry : age.entrySet()){
-//            if(entry.getValue() == -1){
-//                //System.out.println("stId is " + entry.getKey() + " , age is " + entry.getValue());
-//                System.out.println(entry.getKey());
-//            }
-//        }
     }
 
     /**
@@ -179,12 +191,26 @@ public class FoamtreeGenerator {
         return foamtrees;
     }
 
-    // for testing only now
-    private static void addweightToLabel(Foamtree foamtree) {
-        foamtree.setLabel(foamtree.getLabel() + " " + foamtree.getHits());
-        if (foamtree.getGroups() != null) {
-            for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
-                addweightToLabel(foamtreeInGroups);
+
+    private List<Foamtree> addAgeAsWeightToFoamtrees(Map<String, Integer> age, List<Foamtree> foamtrees) {
+        for (Foamtree foamtree : foamtrees) {
+            addAgeAsWeightToFoamtree(age, foamtree);
+        }
+        return foamtrees;
+    }
+
+    private void addAgeAsWeightToFoamtree(Map<String, Integer> age, Foamtree foamtree) {
+
+        if (!age.isEmpty()) {
+            if (age.containsKey(foamtree.getStId())) {
+                foamtree.setWeight(age.get(foamtree.getStId()));
+            } else {
+                foamtree.setWeight(1);
+            }
+            if (foamtree.getGroups() != null) {
+                for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
+                    addAgeAsWeightToFoamtree(age, foamtreeInGroups);
+                }
             }
         }
     }
