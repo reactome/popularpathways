@@ -87,7 +87,7 @@
             groupSelectionOutlineColor: "#E86365"
         });
 
-        // add hits value to label
+        // add weight value to label
         foamtree.set({
             groupLabelDecorator: function (opts, props, vars) {
                 vars.labelText = vars.labelText + " [" + props.group.age + " " + props.group.weight + "]";
