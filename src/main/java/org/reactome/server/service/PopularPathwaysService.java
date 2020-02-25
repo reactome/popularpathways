@@ -18,10 +18,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+
 
 @Component
 public class PopularPathwaysService {
@@ -31,7 +33,9 @@ public class PopularPathwaysService {
     private LogDataCSVParser logDataCSVParser;
     private FileUploadService fileUploadService;
     private static String popularPathwayFolder;
-    public Map<File, File> AVAILABLE_FILES;
+    private Map<File, File> AVAILABLE_FILES;
+    private Map<String, Integer> pathwayAge;
+
 
     @Autowired
     public void setTlpService(TopLevelPathwayService tlpService) {
@@ -42,7 +46,6 @@ public class PopularPathwaysService {
     public void setAdvancedDatabaseObjectService(AdvancedDatabaseObjectService advancedDatabaseObjectService) {
         this.advancedDatabaseObjectService = advancedDatabaseObjectService;
     }
-
     @Autowired
     public void setLogDataCSVParser(LogDataCSVParser logDataCSVParser) {
         this.logDataCSVParser = logDataCSVParser;
@@ -53,7 +56,6 @@ public class PopularPathwaysService {
         this.fileUploadService = fileUploadService;
     }
 
-
     public String getPopularPathwayFolder() {
         return popularPathwayFolder;
     }
@@ -61,11 +63,31 @@ public class PopularPathwaysService {
     public PopularPathwaysService(@Value("${popularpathway.folder}") String folder) throws IOException {
         popularPathwayFolder = folder;
         getAvailableFiles();
-        custom();
+    }
+
+    /**
+     *  Get available files on the server, try to avoid generate the same json file when upload a exists log file
+     * @return
+     * @throws IOException
+     */
+    public Map<File, File> getAvailableFiles() throws IOException {
+
+        if (AVAILABLE_FILES == null) {
+            AVAILABLE_FILES = cacheFiles();
+        }
+        return AVAILABLE_FILES;
+    }
+
+    public Map<String, Integer> getPathwayAge(){
+
+        if (pathwayAge == null) {
+            pathwayAge = generatePathwayAge();
+        }
+        return pathwayAge;
     }
 
     // find a foamtree json file when give a year
-    public File findFoamtreeFileFromMap(String year) throws IOException {
+    public File findFoamtreeFileFromMapByYear(String year) throws IOException {
 
         File jsonFoamtreeFile = null;
 
@@ -80,7 +102,13 @@ public class PopularPathwaysService {
         return jsonFoamtreeFile;
     }
 
-
+    /**
+     *  generate and return a jsonFoamtree file when upload a log file, if log file already existed(use md5 code to check), do not generate it.
+     * @param uploadFile
+     * @param year
+     * @return
+     * @throws IOException
+     */
     public File getJsonFoamtreeFile(MultipartFile uploadFile, int year) throws IOException {
 
         File jsonFoamtreeFile;
@@ -106,15 +134,24 @@ public class PopularPathwaysService {
     }
 
     //todo rewrite 0217
+    /**
+     * generate jsonFoamtree File and save to server
+     * @param logFile
+     * @param year
+     * @return
+     * @throws IOException
+     */
     public File generateFoamtreeFile(File logFile, String year) throws IOException {
-
 
         Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(logFile.getAbsolutePath());
 
         FoamtreeFactory foamtreeFactory = new FoamtreeFactory(tlpService);
         List<Foamtree> foamtrees = foamtreeFactory.getFoamtrees();
         FoamtreeGenerator foamtreeGenerator = new FoamtreeGenerator();
-        List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(inputFileResult, foamtrees);
+
+        // get stId-age pair 0223
+        Map<String, Integer> ageMap = getPathwayAge();
+        List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(inputFileResult, ageMap,foamtrees);
 
         JsonSaver jsonSaver = new JsonSaver();
         String outputPath = popularPathwayFolder + "/" + "json" + "/" + year;
@@ -129,6 +166,11 @@ public class PopularPathwaysService {
     }
 
 
+    /**
+     *  create a HashMap which is used for storing log file & json file pairs
+     * @return
+     * @throws IOException
+     */
     public Map<File, File> cacheFiles() throws IOException {
 
         Map<File, File> fileMap = new HashMap<>();
@@ -137,8 +179,6 @@ public class PopularPathwaysService {
         File logDir = new File(csvPath);
         String jsonPath = popularPathwayFolder + "/" + "json";
         File jsonDir = new File(jsonPath);
-
-        File folder = new File(popularPathwayFolder);
 
         //todo call once
         Collection<File> csvFiles = FileUtils.listFiles(logDir, new String[]{"csv"} , true);
@@ -157,30 +197,48 @@ public class PopularPathwaysService {
         return fileMap;
     }
 
+    /**
+     * use @PostConstruct to call method after the initialization
+     * generate a HashMap which is used for storing  stId & age pairs
+     * @return
+     */
+    @PostConstruct
+    public Map<String, Integer>  generatePathwayAge() {
 
-    public Map<File, File> getAvailableFiles() throws IOException {
+        // create stId - age pair
+        Map<String, Integer> pathwayAge = new HashMap<>();
 
-        if (AVAILABLE_FILES == null) {
-            AVAILABLE_FILES = cacheFiles();
-        }
-        return AVAILABLE_FILES;
-    }
-
-    public void custom()  {
         try {
-            String query = "MATCH (p:Pathway{speciesName:\"Homo sapiens\"})<-[:authored]-(a:InstanceEdit)\n" +
-                    "OPTIONAL MATCH (p)<-[:reviewed]-(r:InstanceEdit)\n" +
-                    "RETURN p.stId AS stId, max(a.dateTime) AS lastAuthored, max(r.dateTime) AS lastReviewed";
+            String query = "MATCH (p:Pathway{speciesName: 'Homo sapiens'})" +
+                    "OPTIONAL MATCH (p) -[:authored]-(a:InstanceEdit)" +
+                    "OPTIONAL MATCH (p) -[:reviewed]-(r:InstanceEdit)" +
+                    "RETURN p.stId AS stId, max(a.dateTime) AS lastAuthored, max(r.dateTime) AS lastReviewed, p.releaseDate AS releaseDate";
             Collection<PathwayDateInfo> pdis = advancedDatabaseObjectService.getCustomQueryResults(PathwayDateInfo.class, query);
+
             for (PathwayDateInfo pdi : pdis) {
-                System.out.println(pdi.getStId());
+                // save age as value
+                Integer age = pdi.getAge(pdi.getLastAuthored(), pdi.getLastReviewed(), pdi.getReleaseDate());
+
+                if (age != null) {
+                    pathwayAge.put(pdi.getStId(), age);
+                } else {
+                    // todo wired
+                    pathwayAge.put(pdi.getStId(), -1);
+                }
             }
         }catch (CustomQueryException e) {
             e.printStackTrace();
         }
+
+        // get the highest and lowest value
+        int max = Collections.max(pathwayAge.values());
+        int min = Collections.min(pathwayAge.values());
+
+        return pathwayAge;
     }
 
-    // todo unused
+
+    // todo unused for now
 //    public static File[] getFileList(String dirPath, String year, String suffix) {
 //
 //        File dir = new File(dirPath);
