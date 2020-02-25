@@ -29,7 +29,7 @@
 <body>
 <!-- Include FoamTree implementation. -->
 <script src="foamtree/carrotsearch.foamtree.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="jQuery/jquery-3.4.1.min.js"></script>
 <script>
     // Initialize FoamTree after the whole page loads to make sure
     // the element has been laid out and has non-zero dimensions.
@@ -37,8 +37,52 @@
         var foamtree = new CarrotSearchFoamTree({
             // Identifier of the HTML element defined above
             id: "visualization",
+            //pixelRatio: window.devicePixelRatio || 1,
+           stacking: "flattened",
 
-           // layout: "ordered",
+            //The duration of the group exposure and unexposure animation.
+            exposeDuration: 500,
+
+            // Lower groupMinDiameter to fit as many groups as possible
+            groupMinDiameter: 0,
+
+            // Set a simple fading animation. Animated rollouts are very expensive for large hierarchies
+            rolloutDuration: 0,
+            pullbackDuration: 0,
+
+            // Lower the border radius a bit to fit more groups
+            groupBorderWidth: 2,
+            groupInsetWidth: 3,
+            groupBorderRadius:0,
+
+            // Don't use gradients and rounded corners for faster rendering
+            groupFillType: "plain",
+
+            // Lower the minimum label font size a bit to show more labels
+            groupLabelMinFontSize: 3,
+
+            //Attach and draw a maximum of 12 levels of groups
+            maxGroupLevelsAttached: 12,
+            maxGroupLevelsDrawn: 12,
+            maxGroupLabelLevelsDrawn: 12,
+
+            //Tune the border options to make them more visible
+            groupBorderWidthScaling: 0.5,
+
+            // Width of the selection outline to draw around selected groups
+            groupSelectionOutlineWidth: 3,
+
+            // Show labels during relaxation
+            wireframeLabelDrawing: "always",
+
+            // Make the description group (in flattened view) smaller to make more space for child groups
+            descriptionGroupMaxHeight: 0.25,
+
+            // Maximum duration of a complete high-quality redraw of the visualization
+            finalCompleteDrawMaxDuration: 40000,
+            finalIncrementalDrawMaxDuration: 40000,
+            wireframeDrawMaxDuration: 4000,
+
             // Color of the outline stroke for the selected groups
             groupSelectionOutlineColor: "#E86365"
         });
@@ -46,7 +90,7 @@
         // add hits value to label
         foamtree.set({
             groupLabelDecorator: function (opts, props, vars) {
-                vars.labelText = vars.labelText + " ["  + props.group.weight + "]";
+                vars.labelText = vars.labelText + " [" + props.group.age + " " + props.group.weight + "]";
             }
         });
 
@@ -58,7 +102,6 @@
                 switch (true) {
                     case age === 0:
                         vars.groupColor = "#DDA0DD";
-                        console.log("age = 0");
                         break;
                     case age >= 1 && age < 10:
                         vars.groupColor = "#BA55D3";
@@ -82,9 +125,9 @@
             }
         });
 
-        window.addEventListener("resize", (function() {
+        window.addEventListener("resize", (function () {
             var timeout;
-            return function() {
+            return function () {
                 window.clearTimeout(timeout);
                 timeout = window.setTimeout(foamtree.resize, 300);
             };
