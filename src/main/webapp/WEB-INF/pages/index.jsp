@@ -38,7 +38,7 @@
             // Identifier of the HTML element defined above
             id: "visualization",
             //pixelRatio: window.devicePixelRatio || 1,
-           stacking: "flattened",
+            stacking: "flattened",
 
             //The duration of the group exposure and unexposure animation.
             exposeDuration: 500,
@@ -53,7 +53,7 @@
             // Lower the border radius a bit to fit more groups
             groupBorderWidth: 2,
             groupInsetWidth: 3,
-            groupBorderRadius:0,
+            groupBorderRadius: 0,
 
             // Don't use gradients and rounded corners for faster rendering
             groupFillType: "plain",
@@ -101,19 +101,43 @@
                 var age = props.group.age;
                 switch (true) {
                     case age === 0:
+                        vars.groupColor = "#E6E6FA";
+                        break;
+                    case age >= 1 && age < 2:
+                        vars.groupColor = "#D8BFD8";
+                        break;
+                    case age >= 2 && age < 4:
                         vars.groupColor = "#DDA0DD";
                         break;
-                    case age >= 1 && age < 10:
+                    case age >= 4 && age < 6:
+                        vars.groupColor = "#EE82EE";
+                        break;
+                    case age >= 6 && age < 8:
+                        vars.groupColor = "#DA70D6";
+                        break;
+                    case age >= 8 && age < 10:
                         vars.groupColor = "#BA55D3";
                         break;
-                    case age >= 10 && age < 15:
+                    case age >= 10 && age < 12:
+                        vars.groupColor = "#9370DB";
+                        break;
+                    case age >= 12 && age < 14:
+                        vars.groupColor = "#8A2BE2";
+                        break;
+                    case age >= 14 && age < 16:
                         vars.groupColor = "#9400D3";
                         break;
-                    case age >= 15 && age < 20:
-                        vars.groupColor = "#8B008B";
+                    case age >= 16 && age < 18:
+                        vars.groupColor = "#9932CC";
+                        break;
+                    case age >= 18 && age < 20:
+                        vars.groupColor = "#800080";
+                        break;
+                    case age >= 20 && age < 22:
+                        vars.groupColor = "#4B0082";
                         break;
                     default:
-                        vars.groupColor = "#58C3E5";
+                        vars.groupColor = "#2f9ec2";
                 }
             }
         });
