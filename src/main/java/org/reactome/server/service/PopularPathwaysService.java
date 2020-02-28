@@ -46,6 +46,7 @@ public class PopularPathwaysService {
     public void setAdvancedDatabaseObjectService(AdvancedDatabaseObjectService advancedDatabaseObjectService) {
         this.advancedDatabaseObjectService = advancedDatabaseObjectService;
     }
+
     @Autowired
     public void setLogDataCSVParser(LogDataCSVParser logDataCSVParser) {
         this.logDataCSVParser = logDataCSVParser;
@@ -66,7 +67,8 @@ public class PopularPathwaysService {
     }
 
     /**
-     *  Get available files on the server, try to avoid generate the same json file when upload a exists log file
+     * Get available files on the server, try to avoid generate the same json file when upload a exists log file
+     *
      * @return
      * @throws IOException
      */
@@ -78,7 +80,7 @@ public class PopularPathwaysService {
         return AVAILABLE_FILES;
     }
 
-    public Map<String, Integer> getPathwayAge(){
+    public Map<String, Integer> getPathwayAge() {
 
         if (pathwayAge == null) {
             pathwayAge = generatePathwayAge();
@@ -103,7 +105,8 @@ public class PopularPathwaysService {
     }
 
     /**
-     *  generate and return a jsonFoamtree file when upload a log file, if log file already existed(use md5 code to check), do not generate it.
+     * get a json foamtree file when upload a log file, if log file already existed(use md5 code to check), do not generate it.
+     *
      * @param uploadFile
      * @param year
      * @return
@@ -133,14 +136,16 @@ public class PopularPathwaysService {
         return jsonFoamtreeFile;
     }
 
-    //todo rewrite 0217
+
     /**
-     * generate jsonFoamtree File and save to server
+     * generate json foamtree File and save to server
+     *
      * @param logFile
      * @param year
      * @return
      * @throws IOException
      */
+    //todo rewrite 0217
     public File generateFoamtreeFile(File logFile, String year) throws IOException {
 
         Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(logFile.getAbsolutePath());
@@ -151,7 +156,7 @@ public class PopularPathwaysService {
 
         // get stId-age pair 0223
         Map<String, Integer> ageMap = getPathwayAge();
-        List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(inputFileResult, ageMap,foamtrees);
+        List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(inputFileResult, ageMap, foamtrees);
 
         JsonSaver jsonSaver = new JsonSaver();
         String outputPath = popularPathwayFolder + "/" + "json" + "/" + year;
@@ -167,11 +172,12 @@ public class PopularPathwaysService {
 
 
     /**
-     *  create a HashMap which is used for storing log file & json file pairs
+     * create a HashMap which is used for storing log file & json file pairs
+     *
      * @return
      * @throws IOException
      */
-    public Map<File, File> cacheFiles() throws IOException {
+    public Map<File, File> cacheFiles() {
 
         Map<File, File> fileMap = new HashMap<>();
 
@@ -181,8 +187,8 @@ public class PopularPathwaysService {
         File jsonDir = new File(jsonPath);
 
         //todo call once
-        Collection<File> csvFiles = FileUtils.listFiles(logDir, new String[]{"csv"} , true);
-        Collection<File> jsonFiles = FileUtils.listFiles(jsonDir, new String[]{"json"} , true);
+        Collection<File> csvFiles = FileUtils.listFiles(logDir, new String[]{"csv"}, true);
+        Collection<File> jsonFiles = FileUtils.listFiles(jsonDir, new String[]{"json"}, true);
 
         //.stream().filter(file -> Boolean.parseBoolean(FilenameUtils.getExtension("csv"))).collect(Collectors.toList());
         // is there a clearer way?
@@ -200,10 +206,11 @@ public class PopularPathwaysService {
     /**
      * use @PostConstruct to call method after the initialization
      * generate a HashMap which is used for storing  stId & age pairs
+     *
      * @return
      */
     @PostConstruct
-    public Map<String, Integer>  generatePathwayAge() {
+    public Map<String, Integer> generatePathwayAge() {
 
         // create stId - age pair
         Map<String, Integer> pathwayAge = new HashMap<>();
@@ -216,7 +223,7 @@ public class PopularPathwaysService {
             Collection<PathwayDateInfo> pdis = advancedDatabaseObjectService.getCustomQueryResults(PathwayDateInfo.class, query);
 
             for (PathwayDateInfo pdi : pdis) {
-                // save age as value
+                // save stId and age as key and value pair
                 Integer age = pdi.getAge(pdi.getLastAuthored(), pdi.getLastReviewed(), pdi.getReleaseDate());
 
                 if (age != null) {
@@ -226,13 +233,13 @@ public class PopularPathwaysService {
                     pathwayAge.put(pdi.getStId(), -1);
                 }
             }
-        }catch (CustomQueryException e) {
+        } catch (CustomQueryException e) {
             e.printStackTrace();
         }
 
         // get the highest and lowest value
-        int max = Collections.max(pathwayAge.values());
-        int min = Collections.min(pathwayAge.values());
+//        int max = Collections.max(pathwayAge.values());
+//        int min = Collections.min(pathwayAge.values());
 
         return pathwayAge;
     }
