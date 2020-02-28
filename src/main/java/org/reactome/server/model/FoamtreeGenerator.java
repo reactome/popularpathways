@@ -10,22 +10,22 @@ import java.util.stream.Collectors;
 public class FoamtreeGenerator {
 
     //todo wired
-    public List<Foamtree> getResults(Map inputFileResult,Map age, List<Foamtree> foamtrees) {
+    public List<Foamtree> getResults(Map inputFileResult, Map age, List<Foamtree> foamtrees) {
 
-        List<Foamtree> foamtreeClean = removeDuplicatedFoamtrees(foamtrees);
-        List<Foamtree> foamtreesAddWeight = addWeightToFoamtrees(inputFileResult, foamtreeClean);
-       // List<Foamtree> foamtreesAddWeight = addAgeAsWeightToFoamtrees(age, foamtreeClean);
+        List<Foamtree> foamtreeCleanStructure = removeDuplicatedFoamtrees(foamtrees);
+        List<Foamtree> foamtreesAddWeight = addWeightToFoamtrees(inputFileResult, foamtreeCleanStructure);
         List<Foamtree> foamtreesAllDate = addAgeToFoamtrees(age, foamtreesAddWeight);
 
         return foamtreesAllDate;
     }
 
     /**
-     * remove duplicated sub-pathways in Foamtree group, execute only one Foamtree
+     * remove duplicated sub-pathways in foamtree group, execute only one foamtree
+     *
      * @param foamtree
      * @return
      */
-    private Foamtree removeDuplicatedFoamtree( Foamtree foamtree){
+    private Foamtree removeDuplicatedFoamtree(Foamtree foamtree) {
 
         if (foamtree.getGroups() != null) {
             List<Foamtree> removeDuplicated = foamtree.getGroups().stream()
@@ -37,15 +37,16 @@ public class FoamtreeGenerator {
                 removeDuplicatedFoamtree(foamtreeInGroups);
             }
         }
-        return  foamtree;
+        return foamtree;
     }
 
     /**
-     * remove duplicated pathways in Foamtree list
+     * remove duplicated pathways in foamtree list
+     *
      * @param foamtrees
      * @return
      */
-    private List<Foamtree> removeDuplicatedFoamtrees(List<Foamtree> foamtrees){
+    private List<Foamtree> removeDuplicatedFoamtrees(List<Foamtree> foamtrees) {
 
         for (Foamtree foamtree : foamtrees) {
             removeDuplicatedFoamtree(foamtree);
@@ -55,7 +56,7 @@ public class FoamtreeGenerator {
 
 
     /**
-     * add hits value to foamtree, execute only one Foamtree
+     * add hits value to foamtree hits, execute only one foamtree
      *
      * @param inputFileResult
      * @param foamtree
@@ -79,7 +80,7 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * add hits value to Foamtree list
+     * add hits value to foamtree list
      *
      * @param inputFileResult
      * @param foamtrees
@@ -92,7 +93,8 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * add weight value to foamtree, execute only one Foamtree
+     * add weight value to foamtree weight, execute only one foamtree
+     *
      * @param inputFileResult
      * @param foamtree
      */
@@ -113,7 +115,8 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * add weight value to Foamtree list
+     * add weight value to foamtree list
+     *
      * @param inputFileResult
      * @param foamtrees
      * @return
@@ -126,7 +129,8 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * add age value to foamtree, execute only one foamtree
+     * add age value to foamtree age, execute only one foamtree
+     *
      * @param age
      * @param foamtree
      */
@@ -146,7 +150,8 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * add age value to Foamtree list
+     * add age value to foamtree list
+     *
      * @param age
      * @param foamtrees
      * @return
@@ -159,7 +164,7 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * sum sub groups weight to parent,execute only one foamtree
+     * sum sub groups weight to parent as foamtree weight,execute only one foamtree
      *
      * @param foamtree
      */
@@ -192,6 +197,7 @@ public class FoamtreeGenerator {
     }
 
 
+    //todo: for testing only
     private List<Foamtree> addAgeAsWeightToFoamtrees(Map<String, Integer> age, List<Foamtree> foamtrees) {
         for (Foamtree foamtree : foamtrees) {
             addAgeAsWeightToFoamtree(age, foamtree);
