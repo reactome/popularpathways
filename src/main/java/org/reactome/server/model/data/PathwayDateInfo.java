@@ -10,20 +10,11 @@ public class PathwayDateInfo {
     private String stId;
     private String lastAuthored;
     private String lastReviewed;
-
-    public String getReleasedDate() {
-        return releasedDate;
-    }
-
-    public void setReleasedDate(String releasedDate) {
-        this.releasedDate = releasedDate;
-    }
-
-    private String releasedDate;
-
+    private String releaseDate;
     private Integer age;
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+    private DateTimeFormatter releaseDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public String getStId() {
         return stId;
@@ -49,25 +40,29 @@ public class PathwayDateInfo {
         this.lastReviewed = lastReviewed;
     }
 
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releasedDate) {
+        this.releaseDate = releasedDate;
+    }
+
     public Integer getAge(String lastAuthored, String lastReviewed, String releasedDate) {
 
-        LocalDate finalDate = null;
-
-        //2006-10-10 13:07:07.0 ; reviewedDate is 2007-11-08 20:39:37.0
+        LocalDate finalDate = LocalDate.now();
 
         // lastAuthored and lastReviewed are null
         if (lastAuthored == null && lastReviewed == null) {
-            //return null;
-            finalDate = LocalDate.parse(releasedDate, formatter);
+            finalDate = LocalDate.parse(releasedDate, releaseDateFormatter);
         }
 
-        if (lastAuthored != null && lastReviewed == null) {
+        if (lastAuthored != null && !lastAuthored.isEmpty() && lastReviewed == null) {
             finalDate = LocalDate.parse(lastAuthored, formatter);
         }
 
         if (lastReviewed != null && !lastReviewed.isEmpty() && lastAuthored == null) {
             finalDate = LocalDate.parse(lastReviewed, formatter);
-
         }
 
         if (lastReviewed != null && !lastReviewed.isEmpty() &&
