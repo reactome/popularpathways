@@ -195,7 +195,7 @@ public class FoamtreeGenerator {
     }
 
 
-    //todo: for testing only
+    //for testing only
     private List<Foamtree> addAgeAsWeightToFoamtrees(Map<String, Integer> age, List<Foamtree> foamtrees) {
         for (Foamtree foamtree : foamtrees) {
             addAgeAsWeightToFoamtree(age, foamtree);
@@ -204,7 +204,6 @@ public class FoamtreeGenerator {
     }
 
     private void addAgeAsWeightToFoamtree(Map<String, Integer> age, Foamtree foamtree) {
-
         if (!age.isEmpty()) {
             if (age.containsKey(foamtree.getStId())) {
                 foamtree.setWeight(age.get(foamtree.getStId()));
