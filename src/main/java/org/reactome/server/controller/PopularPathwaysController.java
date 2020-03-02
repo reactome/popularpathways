@@ -32,17 +32,17 @@ public class PopularPathwaysController {
     public ModelAndView getIndex() throws IOException {
 
         Calendar calendar = new GregorianCalendar();
-        String currentYear = String.valueOf(calendar.get(YEAR) - 1);
+        String lastYear = String.valueOf(calendar.get(YEAR) - 1);
 
         // todo it is wrong
-        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileFromMapByYear(currentYear);
+        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileFromMapByYear(lastYear);
 
         //  Apache Commons IO convert file to String
         String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
 
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("data", data);
-        mav.addObject("year", currentYear);
+        mav.addObject("year", lastYear);
         return mav;
     }
 }
