@@ -21,16 +21,16 @@ public class FileUploadService {
     public File saveLogFileToServer(MultipartFile file, int year) throws IOException {
 
         File serverFile = null;
-        String UPLOADED_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "log";
+        String UPLOADED_LOG_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "log";
 
         if (!file.isEmpty()) {
-            String csvFilePath = UPLOADED_FOLDER + "/" + year;
-            File dir = new File(csvFilePath);
+            String logFilePath = UPLOADED_LOG_FOLDER + "/" + year;
+            File dir = new File(logFilePath);
             if (!dir.exists())
                 dir.mkdirs();
 
             byte[] bytes = file.getBytes();
-            serverFile = new File(dir + "/" + file.getOriginalFilename());
+            serverFile = new File(dir + "/" + "HSA-hits-" + year + ".csv");
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
             stream.write(bytes);
             stream.flush();
