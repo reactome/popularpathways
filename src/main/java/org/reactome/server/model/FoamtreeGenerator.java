@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 
 public class FoamtreeGenerator {
 
-    public List getResults(Map<String, Integer> inputFileResult, Map<String, Integer> age, List<Foamtree> foamtrees) {
+    public List<Foamtree> getResults(Map<String, Integer> logFileResult, Map<String, Integer> age, List<Foamtree> foamtrees) {
 
-        List<Foamtree> foamtreesAllDate;
-        List<Foamtree> foamtreesAddWeight = addWeightToFoamtrees(inputFileResult, removeDuplicatedFoamtrees(foamtrees));
-        foamtreesAllDate = addAgeToFoamtrees(age, foamtreesAddWeight);
+        List<Foamtree> foamtreesAllData;
+        List<Foamtree> foamtreesAddWeight = addWeightToFoamtrees(logFileResult, removeDuplicatedFoamtrees(foamtrees));
+        foamtreesAllData = addAgeToFoamtrees(age, foamtreesAddWeight);
 
-        return foamtreesAllDate;
+        return foamtreesAllData;
     }
 
     /**
@@ -53,26 +53,25 @@ public class FoamtreeGenerator {
         return foamtrees;
     }
 
-
     /**
      * add hits value to foamtree hits, execute only one foamtree
      *
-     * @param inputFileResult
+     * @param logFileResult: stId and hits as key and value pair
      * @param foamtree
      * @return
      */
-    private void addHitsToFoamtree(Map<String, Integer> inputFileResult, Foamtree foamtree) {
+    private void addHitsToFoamtree(Map<String, Integer> logFileResult, Foamtree foamtree) {
 
-        if (!inputFileResult.isEmpty()) {
-            if (inputFileResult.containsKey(foamtree.getStId())) {
-                foamtree.setHits(inputFileResult.get(foamtree.getStId()));
+        if (!logFileResult.isEmpty()) {
+            if (logFileResult.containsKey(foamtree.getStId())) {
+                foamtree.setHits(logFileResult.get(foamtree.getStId()));
                 foamtree.setWeight(foamtree.getHits());
             } else {
                 foamtree.setHits(1);
             }
             if (foamtree.getGroups() != null) {
                 for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
-                    addHitsToFoamtree(inputFileResult, foamtreeInGroups);
+                    addHitsToFoamtree(logFileResult, foamtreeInGroups);
                 }
             }
         }
@@ -81,12 +80,12 @@ public class FoamtreeGenerator {
     /**
      * add hits value to foamtree list
      *
-     * @param inputFileResult
+     * @param logFileResult: stId and hits as key and value pair
      * @param foamtrees
      */
-    public List<Foamtree> addHitsToFoamtrees(Map<String, Integer> inputFileResult, List<Foamtree> foamtrees) {
+    public List<Foamtree> addHitsToFoamtrees(Map<String, Integer> logFileResult, List<Foamtree> foamtrees) {
         for (Foamtree foamtree : foamtrees) {
-            addHitsToFoamtree(inputFileResult, foamtree);
+            addHitsToFoamtree(logFileResult, foamtree);
         }
         return foamtrees;
     }
@@ -94,20 +93,20 @@ public class FoamtreeGenerator {
     /**
      * add weight value to foamtree weight, execute only one foamtree
      *
-     * @param inputFileResult
+     * @param logFileResult: stId and hits as key and value pair
      * @param foamtree
      */
-    private void addWeightoFoamtree(Map<String, Integer> inputFileResult, Foamtree foamtree) {
+    private void addWeightoFoamtree(Map<String, Integer> logFileResult, Foamtree foamtree) {
 
-        if (!inputFileResult.isEmpty()) {
-            if (inputFileResult.containsKey(foamtree.getStId())) {
-                foamtree.setWeight(inputFileResult.get(foamtree.getStId()));
+        if (!logFileResult.isEmpty()) {
+            if (logFileResult.containsKey(foamtree.getStId())) {
+                foamtree.setWeight(logFileResult.get(foamtree.getStId()));
             } else {
                 foamtree.setWeight(1);
             }
             if (foamtree.getGroups() != null) {
                 for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
-                    addWeightoFoamtree(inputFileResult, foamtreeInGroups);
+                    addWeightoFoamtree(logFileResult, foamtreeInGroups);
                 }
             }
         }
@@ -116,13 +115,13 @@ public class FoamtreeGenerator {
     /**
      * add weight value to foamtree list
      *
-     * @param inputFileResult
+     * @param logFileResult: stId and hits as key and value pair
      * @param foamtrees
      * @return
      */
-    private List<Foamtree> addWeightToFoamtrees(Map<String, Integer> inputFileResult, List<Foamtree> foamtrees) {
+    private List<Foamtree> addWeightToFoamtrees(Map<String, Integer> logFileResult, List<Foamtree> foamtrees) {
         for (Foamtree foamtree : foamtrees) {
-            addWeightoFoamtree(inputFileResult, foamtree);
+            addWeightoFoamtree(logFileResult, foamtree);
         }
         return foamtrees;
     }
@@ -130,7 +129,7 @@ public class FoamtreeGenerator {
     /**
      * add age value to foamtree age, execute only one foamtree
      *
-     * @param age
+     * @param age:     stId and age as key and value pair
      * @param foamtree
      */
     private void addAgeToFoamtree(Map<String, Integer> age, Foamtree foamtree) {
@@ -151,7 +150,7 @@ public class FoamtreeGenerator {
     /**
      * add age value to foamtree list
      *
-     * @param age
+     * @param age:      stId and age as key and value pair
      * @param foamtrees
      * @return
      */
