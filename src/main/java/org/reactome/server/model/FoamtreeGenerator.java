@@ -9,12 +9,11 @@ import java.util.stream.Collectors;
 
 public class FoamtreeGenerator {
 
-    //todo wired
-    public List<Foamtree> getResults(Map inputFileResult, Map age, List<Foamtree> foamtrees) {
+    public List getResults(Map<String, Integer> inputFileResult, Map<String, Integer> age, List<Foamtree> foamtrees) {
 
-        List<Foamtree> foamtreeCleanStructure = removeDuplicatedFoamtrees(foamtrees);
-        List<Foamtree> foamtreesAddWeight = addWeightToFoamtrees(inputFileResult, foamtreeCleanStructure);
-        List<Foamtree> foamtreesAllDate = addAgeToFoamtrees(age, foamtreesAddWeight);
+        List<Foamtree> foamtreesAllDate;
+        List<Foamtree> foamtreesAddWeight = addWeightToFoamtrees(inputFileResult, removeDuplicatedFoamtrees(foamtrees));
+        foamtreesAllDate = addAgeToFoamtrees(age, foamtreesAddWeight);
 
         return foamtreesAllDate;
     }
