@@ -80,6 +80,10 @@ public class PopularPathwaysService {
         return AVAILABLE_FILES;
     }
 
+    /**
+     *  stId -Age of a pathways as key and value pair
+     * @return
+     */
     public Map<String, Integer> getPathwayAge() {
 
         if (pathwayAge == null) {
@@ -91,17 +95,17 @@ public class PopularPathwaysService {
     // find a foamtree json file when give a year
     public File findFoamtreeFileFromMapByYear(String year) throws IOException {
 
-        File jsonFoamtreeFile = null;
+        File foamtreeJsonFile = null;
 
         // NPE
-        File csvFile = new File(popularPathwayFolder + "/" + "log" + "/" + year + "/" + "HSA-hits-" + year + ".csv");
+        File logFile = new File(popularPathwayFolder + "/" + "log" + "/" + year + "/" + "HSA-hits-" + year + ".csv");
 
-        Map<File, File> allFiles = getAvailableFiles();
+        Map<File, File> logFilesAndJsonFiles = getAvailableFiles();
 
-        if (allFiles.containsKey(csvFile)) {
-            jsonFoamtreeFile = allFiles.get(csvFile);
+        if (logFilesAndJsonFiles.containsKey(logFile)) {
+            foamtreeJsonFile = logFilesAndJsonFiles.get(logFile);
         }
-        return jsonFoamtreeFile;
+        return foamtreeJsonFile;
     }
 
     /**
@@ -116,19 +120,21 @@ public class PopularPathwaysService {
 
         File jsonFoamtreeFile;
 
-        Map<File, File> allFiles = getAvailableFiles();
+        //pair of existing csv files and foamtree json files
+        Map<File, File> logFilesAndJsonFiles = getAvailableFiles();
 
-        Map<String, File> checksumCsvFiles = new HashMap<>();
+        Map<String, File> md5CodeAndJsonFiles = new HashMap<>();
 
         String uploadFileCode = fileUploadService.getUploadFileMd5Code(uploadFile);
 
-        for (Map.Entry<File, File> entry : allFiles.entrySet()) {
+        //generate a new map which is the Md5Code as key and json file as value
+        for (Map.Entry<File, File> entry : logFilesAndJsonFiles.entrySet()) {
             String checkSum = DigestUtils.md5Hex(new FileInputStream(entry.getKey()));
-            checksumCsvFiles.put(checkSum, entry.getValue());
+            md5CodeAndJsonFiles.put(checkSum, entry.getValue());
         }
 
-        if (checksumCsvFiles.containsKey(uploadFileCode)) {
-            jsonFoamtreeFile = checksumCsvFiles.get(uploadFileCode);
+        if (md5CodeAndJsonFiles.containsKey(uploadFileCode)) {
+            jsonFoamtreeFile = md5CodeAndJsonFiles.get(uploadFileCode);
         } else {
             File csvFile = fileUploadService.saveLogFileToServer(uploadFile, year);
             jsonFoamtreeFile = generateFoamtreeFile(csvFile, Integer.toString(year));
@@ -148,26 +154,27 @@ public class PopularPathwaysService {
     //todo rewrite 0217
     public File generateFoamtreeFile(File logFile, String year) throws IOException {
 
-        Map<String, Integer> inputFileResult = logDataCSVParser.CSVParser(logFile.getAbsolutePath());
+        Map<String, Integer> logFileResult = logDataCSVParser.CSVParser(logFile.getAbsolutePath());
 
         FoamtreeFactory foamtreeFactory = new FoamtreeFactory(tlpService);
         List<Foamtree> foamtrees = foamtreeFactory.getFoamtrees();
         FoamtreeGenerator foamtreeGenerator = new FoamtreeGenerator();
 
-        // get stId-age pair 0223
+        // get stId-age pair
         Map<String, Integer> ageMap = getPathwayAge();
-        List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(inputFileResult, ageMap, foamtrees);
+        List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(logFileResult, ageMap, foamtrees);
 
         JsonSaver jsonSaver = new JsonSaver();
         String outputPath = popularPathwayFolder + "/" + "json" + "/" + year;
         File dirJson = new File(outputPath);
-        if (!dirJson.exists())
+        if (!dirJson.exists()) {
             dirJson.mkdirs();
+        }
 
-        File jsonFoamtreeFile = new File(outputPath + "/" + "HSA-hits-" + year + ".json");
-        jsonSaver.writeToFile(jsonFoamtreeFile, foamtreesWithLogData);
+        File foamtreeJsonFile = new File(outputPath + "/" + "HSA-hits-" + year + ".json");
+        jsonSaver.writeToFile(foamtreeJsonFile, foamtreesWithLogData);
 
-        return jsonFoamtreeFile;
+        return foamtreeJsonFile;
     }
 
 
@@ -223,10 +230,9 @@ public class PopularPathwaysService {
             Collection<PathwayDateInfo> pdis = advancedDatabaseObjectService.getCustomQueryResults(PathwayDateInfo.class, query);
 
             for (PathwayDateInfo pdi : pdis) {
-                // save stId and age as key and value pair
                 Integer age = pdi.getAge(pdi.getLastAuthored(), pdi.getLastReviewed(), pdi.getReleaseDate());
-
                 if (age != null) {
+                    // save stId and age as key and value pair
                     pathwayAge.put(pdi.getStId(), age);
                 } else {
                     // todo wired
