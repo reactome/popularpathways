@@ -1,7 +1,6 @@
 package org.reactome.server.controller;
 
 import org.apache.commons.io.FileUtils;
-import org.reactome.server.service.FileUploadService;
 import org.reactome.server.service.PopularPathwaysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.datetime.DateFormatter;
@@ -29,7 +28,7 @@ public class FileUploadController {
     }
 
     @RequestMapping(value = "/uploadlog", method = RequestMethod.POST)
-    public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("date") Date date) throws IOException {
+    public ModelAndView uploadFile(@RequestParam("logFile") MultipartFile file, @RequestParam("date") Date date) throws IOException {
 
         // get year only
         Calendar calendar = new GregorianCalendar();
@@ -53,7 +52,7 @@ public class FileUploadController {
 
     // date binding
     // in this way spring will know how to convert a String to a Date
-    // initbinder method in controller to bind date values from jsp.
+    // binder method in controller to bind date values from jsp.
     @InitBinder
     public void intDate(WebDataBinder dataBinder) {
         dataBinder.addCustomFormatter(new DateFormatter("yyyy-MM-dd"));
