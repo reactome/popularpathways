@@ -30,6 +30,13 @@
 <!-- Include FoamTree implementation. -->
 <script src="foamtree/carrotsearch.foamtree.js"></script>
 <script src="jQuery/jquery-3.4.1.min.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
 <script>
     // Initialize FoamTree after the whole page loads to make sure
     // the element has been laid out and has non-zero dimensions.
@@ -101,43 +108,43 @@
                 var age = props.group.age;
                 switch (true) {
                     case age === 0:
-                        vars.groupColor = "#E6E6FA";
+                        vars.groupColor = "#F0F8FF";
                         break;
                     case age >= 1 && age < 2:
-                        vars.groupColor = "#D8BFD8";
+                        vars.groupColor = "#B0E0E6";
                         break;
                     case age >= 2 && age < 4:
-                        vars.groupColor = "#DDA0DD";
+                        vars.groupColor = "#87CEFA";
                         break;
                     case age >= 4 && age < 6:
-                        vars.groupColor = "#EE82EE";
+                        vars.groupColor = "#00BFFF";
                         break;
                     case age >= 6 && age < 8:
-                        vars.groupColor = "#DA70D6";
+                        vars.groupColor = "#1E90FF";
                         break;
                     case age >= 8 && age < 10:
-                        vars.groupColor = "#BA55D3";
+                        vars.groupColor = "#6495ED";
                         break;
                     case age >= 10 && age < 12:
-                        vars.groupColor = "#9370DB";
+                        vars.groupColor = "#4682B4";
                         break;
                     case age >= 12 && age < 14:
-                        vars.groupColor = "#8A2BE2";
+                        vars.groupColor = "#4169E1";
                         break;
                     case age >= 14 && age < 16:
-                        vars.groupColor = "#9400D3";
+                        vars.groupColor = "#0000FF";
                         break;
                     case age >= 16 && age < 18:
-                        vars.groupColor = "#9932CC";
+                        vars.groupColor = "#00008B";
                         break;
                     case age >= 18 && age < 20:
-                        vars.groupColor = "#800080";
+                        vars.groupColor = "#191970";
                         break;
                     case age >= 20 && age < 22:
                         vars.groupColor = "#4B0082";
                         break;
                     default:
-                        vars.groupColor = "#2f9ec2";
+                        vars.groupColor = "#8A2BE2";
                 }
             }
         });
@@ -159,13 +166,11 @@
     });
 
 </script>
-<div id="visualization"></div>
-<h4>${file}</h4>
-<h3>Year: ${year}</h3>
-
-<h3 style="color:red">${fileSuccess}</h3>
-
-<h2><a href="${pageContext.request.contextPath}/upload">click to upload</a></h2>
-
+<div id="visualization"></div>a
+<div class="pl-3 pt-3">
+    <h4>Year: ${year}</h4>
+    <h4>${fileSuccess}</h4>
+    <h4><a href="${pageContext.request.contextPath}/upload">Click to upload</a></h4>
+</div>
 </body>
 </html>
