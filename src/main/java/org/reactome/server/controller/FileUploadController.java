@@ -54,7 +54,6 @@ public class FileUploadController {
      * date binding
      * in this way spring will know how to convert a String to a Date
      * binder method in controller to bind date values from jsp
-     *
      */
     @InitBinder
     public void intDate(WebDataBinder dataBinder) {
