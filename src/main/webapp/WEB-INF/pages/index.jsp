@@ -6,7 +6,7 @@
   Time: 11:59
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>Popular pathways</title>
@@ -31,6 +31,7 @@
 <script src="foamtree/carrotsearch.foamtree.js"></script>
 <script src="jQuery/jquery-3.4.1.min.js"></script>
 
+<!-- Include Bootstrap -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
@@ -44,7 +45,7 @@
         var foamtree = new CarrotSearchFoamTree({
             // Identifier of the HTML element defined above
             id: "visualization",
-            //pixelRatio: window.devicePixelRatio || 1,
+            pixelRatio: window.devicePixelRatio || 1,
             stacking: "flattened",
 
             //The duration of the group exposure and unexposure animation.
@@ -166,7 +167,7 @@
     });
 
 </script>
-<div id="visualization"></div>a
+<div id="visualization"></div>
 <div class="pl-3 pt-3">
     <h4>Year: ${year}</h4>
     <h4>${fileSuccess}</h4>
