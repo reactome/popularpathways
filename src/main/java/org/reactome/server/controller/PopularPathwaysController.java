@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+
 import static java.util.Calendar.YEAR;
 
 @Controller
@@ -34,8 +35,17 @@ public class PopularPathwaysController {
         Calendar calendar = new GregorianCalendar();
         String lastYear = String.valueOf(calendar.get(YEAR) - 1);
 
-        // todo it is wrong
-        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileFromMapByYear(lastYear);
+        Map<File, File> logFilesAndJsonFiles = popularPathwaysService.cacheFiles();
+        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileFromMapByYear(lastYear, logFilesAndJsonFiles);
+
+        if (jsonFoamtreeFile == null) {
+            File lastModifiedFile = popularPathwaysService.getLastModifiedFile();
+            String data = FileUtils.readFileToString(lastModifiedFile, String.valueOf(StandardCharsets.UTF_8));
+            ModelAndView mav = new ModelAndView("index");
+            mav.addObject("data", data);
+            mav.addObject("year", lastModifiedFile.getName().replaceAll("\\D+", ""));
+            return mav;
+        }
 
         //  Apache Commons IO convert file to String
         String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
