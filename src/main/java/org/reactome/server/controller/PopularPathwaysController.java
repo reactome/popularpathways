@@ -35,9 +35,9 @@ public class PopularPathwaysController {
         Calendar calendar = new GregorianCalendar();
         String lastYear = String.valueOf(calendar.get(YEAR) - 1);
 
-        Map<File, File> logFilesAndJsonFiles = popularPathwaysService.cacheFiles();
-        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileFromMapByYear(lastYear, logFilesAndJsonFiles);
+        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileByYear(lastYear);
 
+        // return last modified file when no default file found
         if (jsonFoamtreeFile == null) {
             File lastModifiedFile = popularPathwaysService.getLastModifiedFile();
             String data = FileUtils.readFileToString(lastModifiedFile, String.valueOf(StandardCharsets.UTF_8));
