@@ -18,11 +18,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 
+
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -72,7 +74,7 @@ public class PopularPathwaysService {
      * @return
      * @throws IOException
      */
-    public Map<File, File> getAvailableFiles() throws IOException {
+    public Map<File, File> getAvailableFiles(){
 
         if (AVAILABLE_FILES == null) {
             AVAILABLE_FILES = cacheFiles();
@@ -81,7 +83,8 @@ public class PopularPathwaysService {
     }
 
     /**
-     *  stId -Age of a pathways as key and value pair
+     * stId -Age of a pathways as key and value pair
+     *
      * @return
      */
     public Map<String, Integer> getPathwayAge() {
@@ -93,14 +96,11 @@ public class PopularPathwaysService {
     }
 
     // find a foamtree json file when give a year
-    public File findFoamtreeFileFromMapByYear(String year) throws IOException {
+    public File findFoamtreeFileFromMapByYear(String year, Map<File, File> logFilesAndJsonFiles){
 
         File foamtreeJsonFile = null;
 
-        // NPE
         File logFile = new File(popularPathwayFolder + "/" + "log" + "/" + year + "/" + "HSA-hits-" + year + ".csv");
-
-        Map<File, File> logFilesAndJsonFiles = getAvailableFiles();
 
         if (logFilesAndJsonFiles.containsKey(logFile)) {
             foamtreeJsonFile = logFilesAndJsonFiles.get(logFile);
@@ -151,7 +151,6 @@ public class PopularPathwaysService {
      * @return
      * @throws IOException
      */
-    //todo rewrite 0217
     public File generateFoamtreeFile(File logFile, String year) throws IOException {
 
         Map<String, Integer> logFileResult = logDataCSVParser.CSVParser(logFile.getAbsolutePath());
@@ -198,6 +197,7 @@ public class PopularPathwaysService {
         Collection<File> jsonFiles = FileUtils.listFiles(jsonDir, new String[]{"json"}, true);
 
         //.stream().filter(file -> Boolean.parseBoolean(FilenameUtils.getExtension("csv"))).collect(Collectors.toList());
+
         // is there a clearer way?
         for (File csvFile : csvFiles) {
             for (File jsonFile : jsonFiles) {
@@ -235,7 +235,7 @@ public class PopularPathwaysService {
                     // save stId and age as key and value pair
                     pathwayAge.put(pdi.getStId(), age);
                 } else {
-                    // todo wired
+                    // no age found
                     pathwayAge.put(pdi.getStId(), -1);
                 }
             }
@@ -250,47 +250,14 @@ public class PopularPathwaysService {
         return pathwayAge;
     }
 
-
-    // todo unused for now
-//    public static File[] getFileList(String dirPath, String year, String suffix) {
-//
-//        File dir = new File(dirPath);
-//
-//        return dir.listFiles(new FilenameFilter() {
-//            public boolean accept(File dir1, String name) {
-//                return name.endsWith(year + "." + suffix);
-//            }
-//        });
-//    }
-//
-//    public String getFileName(String dirPath, String year, String suffix) throws IOException {
-//
-//        String fileName = null;
-//        File[] fileList = getFileList(dirPath, year, suffix);
-//
-//        if (fileList != null) {
-//            for (File file : fileList) {
-//                fileName = file.getName();
-//            }
-//        }
-//        return fileName;
-//    }
-
-    // iterate the dir to find all files
-//    public List<File> fetchFiles(File dir, String suffix) {
-//        List<File> filesList = new ArrayList<>();
-//        if (dir == null || dir.listFiles() == null) {
-//            return filesList;
-//        }
-//
-//        for (File fileInDir : dir.listFiles()) {
-//            if (fileInDir.isFile() && fileInDir.getName().endsWith("." + suffix)) {
-//                filesList.add(fileInDir);
-//            } else {
-//                filesList.addAll(fetchFiles(fileInDir, suffix));
-//            }
-//        }
-//        return filesList;
-//    }
-
+    /**
+     * get last modified file from foamtree json folder
+     * @return
+     */
+    public File getLastModifiedFile(){
+        String jsonPath = popularPathwayFolder + "/" + "json";
+        Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonPath), new String[]{"json"}, true);
+        List<File> sortJsonFiles = jsonFiles.stream().sorted(Comparator.comparingLong(File::lastModified).reversed()).collect(Collectors.toList());
+        return sortJsonFiles.get(0);
+    }
 }
