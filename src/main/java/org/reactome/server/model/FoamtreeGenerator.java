@@ -18,13 +18,26 @@ public class FoamtreeGenerator {
         return foamtreesAllData;
     }
 
+
     /**
-     * remove duplicated sub-pathways in foamtree group, execute only one foamtree
+     * remove duplicated pathways in foamtree list
      *
-     * @param foamtree
-     * @return
+     * @param foamtrees a foamtree list of top level pathways and sub pathways
      */
-    private Foamtree removeDuplicatedFoamtree(Foamtree foamtree) {
+    private List<Foamtree> removeDuplicatedFoamtrees(List<Foamtree> foamtrees) {
+
+        for (Foamtree foamtree : foamtrees) {
+            removeDuplicatedFoamtree(foamtree);
+        }
+        return foamtrees;
+    }
+
+    /**
+     * remove duplicated sub-pathways in foamtree group, execute only one foamtree object
+     *
+     * @param foamtree object
+     */
+    private void removeDuplicatedFoamtree(Foamtree foamtree) {
 
         if (foamtree.getGroups() != null) {
             List<Foamtree> removeDuplicated = foamtree.getGroups().stream()
@@ -36,29 +49,22 @@ public class FoamtreeGenerator {
                 removeDuplicatedFoamtree(foamtreeInGroups);
             }
         }
-        return foamtree;
     }
 
     /**
-     * remove duplicated pathways in foamtree list
-     *
-     * @param foamtrees
-     * @return
+     * add hits value to foamtree list
      */
-    private List<Foamtree> removeDuplicatedFoamtrees(List<Foamtree> foamtrees) {
-
+    public List<Foamtree> addHitsToFoamtrees(Map<String, Integer> logFileResult, List<Foamtree> foamtrees) {
         for (Foamtree foamtree : foamtrees) {
-            removeDuplicatedFoamtree(foamtree);
+            addHitsToFoamtree(logFileResult, foamtree);
         }
         return foamtrees;
     }
 
     /**
-     * add hits value to foamtree hits, execute only one foamtree
+     * add hits value to foamtree hits attribute, execute only one foamtree
      *
-     * @param logFileResult: stId and hits as key and value pair
-     * @param foamtree
-     * @return
+     * @param logFileResult stId and hits as key value pair
      */
     private void addHitsToFoamtree(Map<String, Integer> logFileResult, Foamtree foamtree) {
 
@@ -78,46 +84,7 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * add hits value to foamtree list
-     *
-     * @param logFileResult: stId and hits as key and value pair
-     * @param foamtrees
-     */
-    public List<Foamtree> addHitsToFoamtrees(Map<String, Integer> logFileResult, List<Foamtree> foamtrees) {
-        for (Foamtree foamtree : foamtrees) {
-            addHitsToFoamtree(logFileResult, foamtree);
-        }
-        return foamtrees;
-    }
-
-    /**
-     * add weight value to foamtree weight, execute only one foamtree
-     *
-     * @param logFileResult: stId and hits as key and value pair
-     * @param foamtree
-     */
-    private void addWeightoFoamtree(Map<String, Integer> logFileResult, Foamtree foamtree) {
-
-        if (!logFileResult.isEmpty()) {
-            if (logFileResult.containsKey(foamtree.getStId())) {
-                foamtree.setWeight(logFileResult.get(foamtree.getStId()));
-            } else {
-                foamtree.setWeight(1);
-            }
-            if (foamtree.getGroups() != null) {
-                for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
-                    addWeightoFoamtree(logFileResult, foamtreeInGroups);
-                }
-            }
-        }
-    }
-
-    /**
      * add weight value to foamtree list
-     *
-     * @param logFileResult: stId and hits as key and value pair
-     * @param foamtrees
-     * @return
      */
     private List<Foamtree> addWeightToFoamtrees(Map<String, Integer> logFileResult, List<Foamtree> foamtrees) {
         for (Foamtree foamtree : foamtrees) {
@@ -127,10 +94,34 @@ public class FoamtreeGenerator {
     }
 
     /**
-     * add age value to foamtree age, execute only one foamtree
+     * add weight value to foamtree weight attribute, execute only one foamtree
+     */
+    private void addWeightoFoamtree(Map<String, Integer> logFileResult, Foamtree foamtree) {
+
+        if (!logFileResult.isEmpty()) {
+            foamtree.setWeight(logFileResult.getOrDefault(foamtree.getStId(), 1));
+            if (foamtree.getGroups() != null) {
+                for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
+                    addWeightoFoamtree(logFileResult, foamtreeInGroups);
+                }
+            }
+        }
+    }
+
+    /**
+     * add age value to foamtrees list
+     */
+    private List<Foamtree> addAgeToFoamtrees(Map<String, Integer> age, List<Foamtree> foamtrees) {
+        for (Foamtree foamtree : foamtrees) {
+            addAgeToFoamtree(age, foamtree);
+        }
+        return foamtrees;
+    }
+
+    /**
+     * add age value to foamtree age attribute, execute only one foamtree
      *
-     * @param age:     stId and age as key and value pair
-     * @param foamtree
+     * @param age stId and age as key value pair
      */
     private void addAgeToFoamtree(Map<String, Integer> age, Foamtree foamtree) {
 
@@ -147,26 +138,21 @@ public class FoamtreeGenerator {
         }
     }
 
+
     /**
-     * add age value to foamtree list
-     *
-     * @param age:      stId and age as key and value pair
-     * @param foamtrees
-     * @return
+     * sum sub groups weight to parent as weight of a foamtree in foamtrees list
      */
-    private List<Foamtree> addAgeToFoamtrees(Map<String, Integer> age, List<Foamtree> foamtrees) {
+    public List<Foamtree> sumFoamtreesWeight(List<Foamtree> foamtrees) {
         for (Foamtree foamtree : foamtrees) {
-            addAgeToFoamtree(age, foamtree);
+            sumFoamtreeWeight(foamtree);
         }
         return foamtrees;
     }
 
     /**
-     * sum sub groups weight to parent as foamtree weight,execute only one foamtree
-     *
-     * @param foamtree
+     * sum sub groups weight to parent as weight of a foamtree, execute only one foamtree
      */
-    public void sumFoamtreeWeight(Foamtree foamtree) {
+    private void sumFoamtreeWeight(Foamtree foamtree) {
         List<Foamtree> groups = foamtree.getGroups();
         if (groups != null) {
             // weight = current hits +  all child weights
@@ -182,19 +168,6 @@ public class FoamtreeGenerator {
         }
     }
 
-    /**
-     * sum sub groups weight to parent in foamtree list
-     *
-     * @param foamtrees
-     */
-    public List<Foamtree> sumFoamtreesWeight(List<Foamtree> foamtrees) {
-        for (Foamtree foamtree : foamtrees) {
-            sumFoamtreeWeight(foamtree);
-        }
-        return foamtrees;
-    }
-
-
     //for testing only
     private List<Foamtree> addAgeAsWeightToFoamtrees(Map<String, Integer> age, List<Foamtree> foamtrees) {
         for (Foamtree foamtree : foamtrees) {
@@ -205,11 +178,7 @@ public class FoamtreeGenerator {
 
     private void addAgeAsWeightToFoamtree(Map<String, Integer> age, Foamtree foamtree) {
         if (!age.isEmpty()) {
-            if (age.containsKey(foamtree.getStId())) {
-                foamtree.setWeight(age.get(foamtree.getStId()));
-            } else {
-                foamtree.setWeight(1);
-            }
+            foamtree.setWeight(age.getOrDefault(foamtree.getStId(), 1));
             if (foamtree.getGroups() != null) {
                 for (Foamtree foamtreeInGroups : foamtree.getGroups()) {
                     addAgeAsWeightToFoamtree(age, foamtreeInGroups);
