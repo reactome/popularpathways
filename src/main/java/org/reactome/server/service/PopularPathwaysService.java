@@ -14,9 +14,8 @@ import org.reactome.server.util.LogDataCSVParser;
 import org.reactome.server.util.JsonSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 
 
 import javax.annotation.PostConstruct;
@@ -26,8 +25,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
-@Component
+@SuppressWarnings("WeakerAccess")
+@Service
 public class PopularPathwaysService {
 
     private TopLevelPathwayService tlpService;
@@ -63,18 +62,15 @@ public class PopularPathwaysService {
         return popularPathwayFolder;
     }
 
-    public PopularPathwaysService(@Value("${popularpathway.folder}") String folder) throws IOException {
+    public PopularPathwaysService(@Value("${popularpathway.folder}") String folder) {
         popularPathwayFolder = folder;
         getAvailableFiles();
     }
 
     /**
-     * Get available files on the server, try to avoid generate the same json file when upload a exists log file
-     *
-     * @return
-     * @throws IOException
+     * get available files on the server, to avoid generate the same json file when upload an existing log file
      */
-    public Map<File, File> getAvailableFiles(){
+    public Map<File, File> getAvailableFiles() {
 
         if (AVAILABLE_FILES == null) {
             AVAILABLE_FILES = cacheFiles();
@@ -83,9 +79,14 @@ public class PopularPathwaysService {
     }
 
     /**
-     * stId -Age of a pathways as key and value pair
-     *
-     * @return
+     * regenerate a csv and json file map after upload a new log file
+     */
+    public void refreshCachedFiles() {
+        AVAILABLE_FILES = cacheFiles();
+    }
+
+    /**
+     * @return a map stId and age as key value pair
      */
     public Map<String, Integer> getPathwayAge() {
 
@@ -95,10 +96,14 @@ public class PopularPathwaysService {
         return pathwayAge;
     }
 
-    // find a foamtree json file when give a year
-    public File findFoamtreeFileFromMapByYear(String year, Map<File, File> logFilesAndJsonFiles){
+    /**
+     * find a foamtree json file when give a year
+     */
+    public File findFoamtreeFileByYear(String year) {
 
         File foamtreeJsonFile = null;
+
+        Map<File, File> logFilesAndJsonFiles = getAvailableFiles();
 
         File logFile = new File(popularPathwayFolder + "/" + "log" + "/" + year + "/" + "HSA-hits-" + year + ".csv");
 
@@ -110,24 +115,19 @@ public class PopularPathwaysService {
 
     /**
      * get a json foamtree file when upload a log file, if log file already existed(use md5 code to check), do not generate it.
-     *
-     * @param uploadFile
-     * @param year
-     * @return
-     * @throws IOException
      */
     public File getJsonFoamtreeFile(MultipartFile uploadFile, int year) throws IOException {
 
         File jsonFoamtreeFile;
 
-        //pair of existing csv files and foamtree json files
+        // existing csv files and foamtree json files as key value pair
         Map<File, File> logFilesAndJsonFiles = getAvailableFiles();
 
         Map<String, File> md5CodeAndJsonFiles = new HashMap<>();
 
         String uploadFileCode = fileUploadService.getUploadFileMd5Code(uploadFile);
 
-        //generate a new map which is the Md5Code as key and json file as value
+        // generate a new map which is the Md5Code as key and json file as value
         for (Map.Entry<File, File> entry : logFilesAndJsonFiles.entrySet()) {
             String checkSum = DigestUtils.md5Hex(new FileInputStream(entry.getKey()));
             md5CodeAndJsonFiles.put(checkSum, entry.getValue());
@@ -138,6 +138,7 @@ public class PopularPathwaysService {
         } else {
             File csvFile = fileUploadService.saveLogFileToServer(uploadFile, year);
             jsonFoamtreeFile = generateFoamtreeFile(csvFile, Integer.toString(year));
+            refreshCachedFiles();
         }
         return jsonFoamtreeFile;
     }
@@ -146,11 +147,9 @@ public class PopularPathwaysService {
     /**
      * generate json foamtree File and save to server
      *
-     * @param logFile
-     * @param year
-     * @return
-     * @throws IOException
+     * @param logFile log file which is already saved to server
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public File generateFoamtreeFile(File logFile, String year) throws IOException {
 
         Map<String, Integer> logFileResult = logDataCSVParser.CSVParser(logFile.getAbsolutePath());
@@ -178,48 +177,40 @@ public class PopularPathwaysService {
 
 
     /**
-     * create a HashMap which is used for storing log file & json file pairs
+     * create a HashMap which is used for storing log file and json file pairs
      *
-     * @return
-     * @throws IOException
+     * @return a map
      */
     public Map<File, File> cacheFiles() {
 
-        Map<File, File> fileMap = new HashMap<>();
+        Map<File, File> fileMatchMap = new HashMap<>();
 
         String csvPath = popularPathwayFolder + "/" + "log";
         File logDir = new File(csvPath);
         String jsonPath = popularPathwayFolder + "/" + "json";
         File jsonDir = new File(jsonPath);
 
-        //todo call once
         Collection<File> csvFiles = FileUtils.listFiles(logDir, new String[]{"csv"}, true);
         Collection<File> jsonFiles = FileUtils.listFiles(jsonDir, new String[]{"json"}, true);
 
-        //.stream().filter(file -> Boolean.parseBoolean(FilenameUtils.getExtension("csv"))).collect(Collectors.toList());
-
-        // is there a clearer way?
         for (File csvFile : csvFiles) {
             for (File jsonFile : jsonFiles) {
                 if (FilenameUtils.getBaseName(csvFile.getName()).equals(FilenameUtils.getBaseName(jsonFile.getName()))) {
-                    fileMap.put(csvFile, jsonFile);
+                    fileMatchMap.put(csvFile, jsonFile);
                     break;
                 }
             }
         }
-        return fileMap;
+        return fileMatchMap;
     }
 
     /**
      * use @PostConstruct to call method after the initialization
-     * generate a HashMap which is used for storing  stId & age pairs
-     *
-     * @return
+     * generate a HashMap which is used for storing  stId and age pairs
      */
     @PostConstruct
     public Map<String, Integer> generatePathwayAge() {
 
-        // create stId - age pair
         Map<String, Integer> pathwayAge = new HashMap<>();
 
         try {
@@ -252,9 +243,10 @@ public class PopularPathwaysService {
 
     /**
      * get last modified file from foamtree json folder
-     * @return
+     *
+     * @return the last modified foamtree json file
      */
-    public File getLastModifiedFile(){
+    public File getLastModifiedFile() {
         String jsonPath = popularPathwayFolder + "/" + "json";
         Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonPath), new String[]{"json"}, true);
         List<File> sortJsonFiles = jsonFiles.stream().sorted(Comparator.comparingLong(File::lastModified).reversed()).collect(Collectors.toList());
