@@ -53,19 +53,4 @@ public class FileUploadService {
         }
         return md5Ret;
     }
-
-    //convert MuitipartFile to file
-//    public File convertFile(MultipartFile file, int year) throws IOException {
-//
-//        File convertFile = new File(file.getOriginalFilename());
-//
-//        System.out.println(convertFile.getAbsolutePath());
-//        convertFile.createNewFile();
-//        FileOutputStream fos = new FileOutputStream(convertFile);
-//        fos.write(file.getBytes());
-//        fos.close();
-//        System.out.println(convertFile.getAbsolutePath());
-//        return convertFile;
-//
-//    }
 }
