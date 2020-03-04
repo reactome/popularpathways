@@ -15,7 +15,7 @@
 <script>
 
     // Add the following code if you want the name of the file appear on select
-    $(".custom-file-input").on("change", function() {
+    $(".custom-file-input").on("change", function () {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
@@ -67,20 +67,29 @@
 
     <h4>Declaration</h4>
     <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eget sapien sapien.
-        Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum
-        velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus.
-        posuere nec lacus. Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod
-        ultrices massa, et feugiat ipsum consequat eu.
+        Please note that the uploader is sensitive with the format of log file for now,
+        we only have two columns in log file, first is the stId without species prefix,
+        second is the hits value of that pathways, the header content doesn't bother.
     </p>
-<%--    <img alt="Bootstrap Image Preview"--%>
-<%--         src="http://d2z9u6n32o8z20.cloudfront.net/support_assets/csvguide-image_0.png"--%>
-<%--         style="width: 500px"/>--%>
+
+    <p>
+        Please see below as an example.
+    </p>
+
+    <div class="d-flex justify-content-around">
+    <img alt="Bootstrap Image Preview"
+         src="images/log_csv_ep.png"
+         style="width: 500px"/>
+
+        <img alt="Bootstrap Image Preview"
+             src="images/log_txt_ep.png"
+             style="width: 500px"/>
+    </div>
 </div>
 <script>
 
     // Add the following code if you want the name of the file appear on select
-    $(".custom-file-input").on("change", function() {
+    $(".custom-file-input").on("change", function () {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
