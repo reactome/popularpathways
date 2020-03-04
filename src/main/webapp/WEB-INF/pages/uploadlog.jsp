@@ -12,6 +12,17 @@
 </head>
 <body>
 
+<script>
+
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
+
+
+<script src="jQuery/jquery-3.4.1.min.js"></script>
 <!-- Include Bootstrap -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -20,26 +31,60 @@
         crossorigin="anonymous"></script>
 
 
-
 <div class="container">
-    <h4>${fileSuccess}</h4>
+    <h3>
+        Reactome Log File Uploader
+    </h3>
+    </br>
     <form method="POST" action="${pageContext.request.contextPath}/uploadlog" enctype="multipart/form-data">
         <div class="form-group row">
-            <label for="exampleInputFile" class="col-2 col-form-label">File to upload</label>
-            <div class="col-10">
-                <input type="file" class="form-control-file" id="exampleInputFile" name="logFile" accept=".csv, .txt, text/csv, text/plain">
+            <label for="inputGroupFile01" class="col-sm-2 col-form-label">Upload</label>
+            <div class="col">
+                <input type="file" class="custom-file-input" id="inputGroupFile01"
+                       aria-describedby="inputGroupFileAddon01" placeholder="Chose" name="logFile"
+                       accept=".csv, .txt, text/csv, text/plain">
+                <p class="help-block">
+                    Only .csv and .txt files can be uploaded
+                </p>
+                <label class="custom-file-label" style="margin-left: 13px; margin-right: 13px" for="inputGroupFile01">Choose
+                    file</label>
             </div>
         </div>
 
         <div class="form-group row">
-            <label for="example-date-input" class="col-2 col-form-label">Year of the log file </label>
-            <div class="col-10">
+            <label for="example-date-input" class="col-sm-2 col-form-label">Select year</label>
+            <div class="col">
                 <input type="date" class="form-control" id="example-date-input" name="date">
+                <p class="help-block">
+                    Please select a date, not only year
+                </p>
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+
+    </br>
+
+    <h4>Declaration</h4>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eget sapien sapien.
+        Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum
+        velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus.
+        posuere nec lacus. Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod
+        ultrices massa, et feugiat ipsum consequat eu.
+    </p>
+<%--    <img alt="Bootstrap Image Preview"--%>
+<%--         src="http://d2z9u6n32o8z20.cloudfront.net/support_assets/csvguide-image_0.png"--%>
+<%--         style="width: 500px"/>--%>
 </div>
+<script>
+
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
 
 </body>
 </html>

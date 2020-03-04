@@ -179,7 +179,7 @@
 
 <div class="d-flex d-flex justify-content-around">
     <span>Year: ${year}</span>
-    <a href="${pageContext.request.contextPath}/upload" class="btn btn-outline-primary btn-sm stretched-link">Upload</a>
+    <a href="${pageContext.request.contextPath}/upload" class="btn btn-outline-primary btn-sm">Upload</a>
 </div>
 
 </body>
