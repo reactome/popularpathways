@@ -13,14 +13,14 @@
     <style>
         body, html {
             position: relative;
-            height: 95%;
+            height: 100%;
             margin: 0;
         }
 
         /** Set some preferred visualization size, but cap it to the maximum screen size */
         #visualization {
             width: 100%;
-            height: 90%;
+            height: 94%;
             max-width: 100%;
             max-height: 100%;
         }
@@ -176,10 +176,11 @@
 
 </script>
 <div id="visualization"></div>
-<div class="pl-3 pt-3">
-    <h4>Year: ${year}</h4>
-    <h4>${fileSuccess}</h4>
-    <h4><a href="${pageContext.request.contextPath}/upload">Click to upload log file</a></h4>
+
+<div class="d-flex d-flex justify-content-around">
+    <span>Year: ${year}</span>
+    <a href="${pageContext.request.contextPath}/upload" class="btn btn-outline-primary btn-sm stretched-link">Upload</a>
 </div>
+
 </body>
 </html>

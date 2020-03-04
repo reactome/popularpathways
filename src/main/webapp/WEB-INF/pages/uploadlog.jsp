@@ -19,6 +19,7 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 
+<h4>Reactome Log File Uploader</h4>
 
 <div class="container">
     <h4>${fileSuccess}</h4>
@@ -26,7 +27,7 @@
         <div class="form-group row">
             <label for="exampleInputFile" class="col-2 col-form-label">File to upload</label>
             <div class="col-10">
-                <input type="file" class="form-control-file" id="exampleInputFile" name="logFile">
+                <input type="file" class="form-control-file" id="exampleInputFile" name="logFile" accept=".csv, .txt, text/csv, text/plain">
             </div>
         </div>
 
