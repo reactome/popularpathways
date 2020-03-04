@@ -62,3 +62,6 @@ INFO: Starting ProtocolHandler ["http-bio-8686"]
 #### Result
 
 * Access your local [installation](http://localhost:8686/)
+
+<img width="900" alt="Reacfoam_dev" src="https://user-images.githubusercontent.com/6442828/75920976-3e164000-5e58-11ea-8cd4-a9d66056736a.png">
+
