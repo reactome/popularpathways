@@ -157,6 +157,14 @@
             }
         });
 
+        // hold a polygonal to jump to Reactome pathway page
+        foamtree.set({
+            onGroupHold: function (e) {
+                e.preventDefault();
+                window.open(e.group.url);
+            }
+        });
+
         window.addEventListener("resize", (function () {
             var timeout;
             return function () {
@@ -171,7 +179,7 @@
 <div class="pl-3 pt-3">
     <h4>Year: ${year}</h4>
     <h4>${fileSuccess}</h4>
-    <h4><a href="${pageContext.request.contextPath}/upload">Click to upload</a></h4>
+    <h4><a href="${pageContext.request.contextPath}/upload">Click to upload log file</a></h4>
 </div>
 </body>
 </html>
