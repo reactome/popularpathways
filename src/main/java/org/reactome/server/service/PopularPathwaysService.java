@@ -162,7 +162,7 @@ public class PopularPathwaysService {
         Map<String, Integer> ageMap = getPathwayAge();
         List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(logFileResult, ageMap, foamtrees);
 
-        JsonSaver jsonSaver = new JsonSaver();
+        // get path
         String outputPath = popularPathwayFolder + "/" + "json" + "/" + year;
         File dirJson = new File(outputPath);
         if (!dirJson.exists()) {
@@ -170,6 +170,7 @@ public class PopularPathwaysService {
         }
 
         File foamtreeJsonFile = new File(outputPath + "/" + "HSA-hits-" + year + ".json");
+        JsonSaver jsonSaver = new JsonSaver();
         jsonSaver.writeToFile(foamtreeJsonFile, foamtreesWithLogData);
 
         return foamtreeJsonFile;

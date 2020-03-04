@@ -18,8 +18,10 @@ public class LogDataCSVParser {
     public Map<String, Integer> CSVParser(String filepath) throws IOException {
         Map<String, Integer> inputFileResult = new HashMap<>();
         Reader reader = Files.newBufferedReader(Paths.get(filepath));
+        // skip the header line
         CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader());
         for (CSVRecord record : csvParser) {
+            // accessing columns by index
             String stId = "R-HSA-" + record.get(0);
             String count = record.get(1).replace(",", "");
             inputFileResult.put(stId, Integer.parseInt(count));
