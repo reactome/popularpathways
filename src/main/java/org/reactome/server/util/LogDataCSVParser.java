@@ -22,7 +22,7 @@ public class LogDataCSVParser {
         CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader());
         for (CSVRecord record : csvParser) {
             // accessing columns by index
-            String stId = "R-HSA-" + record.get(0);
+            String stId = record.get(0).startsWith("R-HSA-") ? record.get(0) : "R-HSA-" + record.get(0);
             String count = record.get(1).replace(",", "");
             inputFileResult.put(stId, Integer.parseInt(count));
         }
