@@ -99,7 +99,7 @@ public class PopularPathwaysService {
     /**
      * find a foamtree json file when give a year
      */
-    public File findFoamtreeFileByYear(String year) {
+    public File findFoamtreeFileByYear(int year) {
 
         File foamtreeJsonFile = null;
 
@@ -138,7 +138,7 @@ public class PopularPathwaysService {
         } else {
             File csvFile = fileUploadService.saveLogFileToServer(uploadFile, year);
             if (csvFile != null) {
-                jsonFoamtreeFile = generateFoamtreeFile(csvFile, Integer.toString(year));
+                jsonFoamtreeFile = generateFoamtreeFile(csvFile, year);
                 refreshCachedFiles();
             }
         }
@@ -152,7 +152,7 @@ public class PopularPathwaysService {
      * @param logFile log file which is already saved to server
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public File generateFoamtreeFile(File logFile, String year) throws IOException {
+    public File generateFoamtreeFile(File logFile, int year) throws IOException {
 
         Map<String, Integer> logFileResult = logDataCSVParser.CSVParser(logFile.getAbsolutePath());
 

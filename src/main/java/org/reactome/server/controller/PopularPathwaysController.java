@@ -33,7 +33,7 @@ public class PopularPathwaysController {
     public ModelAndView getIndex() throws IOException {
 
         Calendar calendar = new GregorianCalendar();
-        String lastYear = String.valueOf(calendar.get(YEAR) - 1);
+        int lastYear = (calendar.get(YEAR) - 1);
 
         ModelAndView mav = new ModelAndView("index");
 
