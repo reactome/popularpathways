@@ -35,24 +35,22 @@ public class PopularPathwaysController {
         Calendar calendar = new GregorianCalendar();
         String lastYear = String.valueOf(calendar.get(YEAR) - 1);
 
-        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileByYear(lastYear);
-
-        // return last modified file when no default file found
-        if (jsonFoamtreeFile == null) {
-            File lastModifiedFile = popularPathwaysService.getLastModifiedFile();
-            String data = FileUtils.readFileToString(lastModifiedFile, String.valueOf(StandardCharsets.UTF_8));
-            ModelAndView mav = new ModelAndView("index");
-            mav.addObject("data", data);
-            mav.addObject("year", lastModifiedFile.getName().replaceAll("\\D+", ""));
-            return mav;
-        }
-
-        //  Apache Commons IO convert file to String
-        String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
-
         ModelAndView mav = new ModelAndView("index");
+
+        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileByYear(lastYear);
+        String data = null;
+
+        if (jsonFoamtreeFile != null) {
+            data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
+            mav.addObject("year", lastYear);
+        } else {
+            // visualize the last modified file when no default file found
+            File lastModifiedFile = popularPathwaysService.getLastModifiedFile();
+            // Apache Commons IO convert file to String
+            data = FileUtils.readFileToString(lastModifiedFile, String.valueOf(StandardCharsets.UTF_8));
+            mav.addObject("year", lastModifiedFile.getName().replaceAll("\\D+", ""));
+        }
         mav.addObject("data", data);
-        mav.addObject("year", lastYear);
         return mav;
     }
 }
