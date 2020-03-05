@@ -77,9 +77,14 @@
     </p>
 
     <div class="d-flex justify-content-around">
-    <img alt="Bootstrap Image Preview"
-         src="images/log_csv_ep.png"
-         style="width: 500px"/>
+        <p>CSV File</p>
+        <p>TXT File</p>
+
+    </div>
+    <div class="d-flex justify-content-around">
+        <img alt="Bootstrap Image Preview"
+             src="images/log_csv_ep.png"
+             style="width: 500px"/>
 
         <img alt="Bootstrap Image Preview"
              src="images/log_txt_ep.png"
