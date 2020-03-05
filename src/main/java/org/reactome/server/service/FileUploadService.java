@@ -1,6 +1,8 @@
 package org.reactome.server.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +26,13 @@ public class FileUploadService {
         File serverFile = null;
         String UPLOADED_LOG_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "log";
 
-        if (!file.isEmpty()) {
+        InputStream multipleFileStream = file.getInputStream();
+        BufferedReader brFile = new BufferedReader(new InputStreamReader(multipleFileStream));
+        CSVParser csvParser = new CSVParser(brFile, CSVFormat.DEFAULT.withFirstRecordAsHeader());
+
+        // validate the file has two columns
+        if (!file.isEmpty() && csvParser.getRecords().get(0).size() >= 2) {
+
             String logFilePath = UPLOADED_LOG_FOLDER + "/" + year;
             File dir = new File(logFilePath);
             if (!dir.exists())
