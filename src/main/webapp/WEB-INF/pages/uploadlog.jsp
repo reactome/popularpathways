@@ -12,16 +12,6 @@
 </head>
 <body>
 
-<script>
-
-    // Add the following code if you want the name of the file appear on select
-    $(".custom-file-input").on("change", function () {
-        var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-    });
-</script>
-
-
 <script src="jQuery/jquery-3.4.1.min.js"></script>
 <!-- Include Bootstrap -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -54,13 +44,22 @@
         <div class="form-group row">
             <label for="example-date-input" class="col-sm-2 col-form-label">Select year</label>
             <div class="col">
-                <input type="date" class="form-control" id="example-date-input" name="date">
+                <input type="date" class="form-control" id="example-date-input" min="2005-01-01" value="2019-01-01"
+                       name="date">
                 <p class="help-block">
-                    Please select a date, not only year
+                    Please select a date for yearly log, month and days can be any value
                 </p>
             </div>
         </div>
+
+        <div class="form-group row">
+            <div class="col">
+                <p class="text-warning">${errormsg}</p>
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-primary">Submit</button>
+
     </form>
 
     </br>
