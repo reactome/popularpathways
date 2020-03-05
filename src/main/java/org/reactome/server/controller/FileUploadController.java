@@ -30,6 +30,7 @@ public class FileUploadController {
     @RequestMapping(value = "/uploadlog", method = RequestMethod.POST)
     public ModelAndView uploadFile(@RequestParam("logFile") MultipartFile file, @RequestParam("date") Date date) throws IOException {
 
+        ModelAndView mav = new ModelAndView("index");
         // get year only
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -38,15 +39,16 @@ public class FileUploadController {
         // get foamtreeJosnFile if doesn't exists then create it
         File jsonFoamtreeFile = popularPathwaysService.getJsonFoamtreeFile(file, year);
 
-        // convert file to String
-        String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
-
-        ModelAndView mav = new ModelAndView("index");
-        mav.addObject("file", jsonFoamtreeFile.getName());
-        mav.addObject("fileSuccess", "File successfully uploaded!");
-        mav.addObject("data", data);
-        mav.addObject("year", year);
-
+        String data = null;
+        if (jsonFoamtreeFile != null) {
+            // convert file to String
+            data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
+            mav.addObject("data", data);
+            mav.addObject("year", year);
+        } else {
+            mav = new ModelAndView("uploadlog");
+            mav.addObject("errormsg", "File is wrong! Please check your file and try again.");
+        }
         return mav;
     }
 
