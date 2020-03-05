@@ -118,7 +118,7 @@ public class PopularPathwaysService {
      */
     public File getJsonFoamtreeFile(MultipartFile uploadFile, int year) throws IOException {
 
-        File jsonFoamtreeFile;
+        File jsonFoamtreeFile = null;
 
         // existing csv files and foamtree json files as key value pair
         Map<File, File> logFilesAndJsonFiles = getAvailableFiles();
@@ -137,8 +137,10 @@ public class PopularPathwaysService {
             jsonFoamtreeFile = md5CodeAndJsonFiles.get(uploadFileCode);
         } else {
             File csvFile = fileUploadService.saveLogFileToServer(uploadFile, year);
-            jsonFoamtreeFile = generateFoamtreeFile(csvFile, Integer.toString(year));
-            refreshCachedFiles();
+            if (csvFile != null) {
+                jsonFoamtreeFile = generateFoamtreeFile(csvFile, Integer.toString(year));
+                refreshCachedFiles();
+            }
         }
         return jsonFoamtreeFile;
     }
@@ -251,6 +253,17 @@ public class PopularPathwaysService {
         String jsonPath = popularPathwayFolder + "/" + "json";
         Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonPath), new String[]{"json"}, true);
         List<File> sortJsonFiles = jsonFiles.stream().sorted(Comparator.comparingLong(File::lastModified).reversed()).collect(Collectors.toList());
+        return sortJsonFiles.get(0);
+    }
+
+    /**
+     * get lasted file from foamtree json folder which is close to current date time
+     * @return the latest foamtree json file
+     */
+    public File getLastedYearlyJsonFile() {
+        String jsonPath = popularPathwayFolder + "/" + "json";
+        Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonPath), new String[]{"json"}, true);
+        List<File> sortJsonFiles = jsonFiles.stream().sorted(Comparator.comparing(File::getName).reversed()).collect(Collectors.toList());
         return sortJsonFiles.get(0);
     }
 }
