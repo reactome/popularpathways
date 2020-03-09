@@ -29,7 +29,7 @@ public class PopularPathwaysController {
     public PopularPathwaysController() {
     }
 
-    @RequestMapping(value = "/")
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView getIndex() throws IOException {
 
         Calendar calendar = new GregorianCalendar();
@@ -38,7 +38,8 @@ public class PopularPathwaysController {
         ModelAndView mav = new ModelAndView("index");
 
         File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileByYear(lastYear);
-        String data = null;
+        List<String> yearList= popularPathwaysService.getYearList();
+        String data;
 
         if (jsonFoamtreeFile != null) {
             data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
@@ -50,6 +51,22 @@ public class PopularPathwaysController {
             data = FileUtils.readFileToString(lastModifiedFile, String.valueOf(StandardCharsets.UTF_8));
             mav.addObject("year", lastModifiedFile.getName().replaceAll("\\D+", ""));
         }
+        mav.addObject("yearList", yearList);
+        mav.addObject("data", data);
+        return mav;
+    }
+
+    @RequestMapping(value = "/load/{yearIndex}", method = RequestMethod.GET)
+    public ModelAndView getYearIndex(@PathVariable("yearIndex") int year) throws IOException {
+
+        ModelAndView mav = new ModelAndView("index");
+        File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileByYear(year);
+
+        List<String> yearList= popularPathwaysService.getYearList();
+
+        String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
+        mav.addObject("year", year);
+        mav.addObject("yearList", yearList);
         mav.addObject("data", data);
         return mav;
     }
