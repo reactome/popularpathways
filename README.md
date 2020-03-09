@@ -15,7 +15,7 @@ The aim of the project is to visualise the relative number of web hits each path
 ##### Git Clone
 
 ```console
-git clone https://github.com/reactome/
+git clone https://github.com/Chuqiaoo/popularpathways.git
 cd popularpathways
 ```
 
@@ -30,7 +30,7 @@ Please refer to Maven Profile [Guideline](http://maven.apache.org/guides/introdu
     <id>reactome</id>
     <properties>
         <mail.host>localhost</mail.host>
-        <mail.port>8181</mail.port>
+        <mail.port>7474</mail.port>
         <mail.username>username</mail.username>
         <mail.password>password</mail.password>
         <mail.enable.auth>true</mail.enable.auth>

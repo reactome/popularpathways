@@ -36,7 +36,6 @@ public class PopularPathwaysController {
         int lastYear = (calendar.get(YEAR) - 1);
 
         ModelAndView mav = new ModelAndView("index");
-
         File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileByYear(lastYear);
         List<String> yearList= popularPathwaysService.getYearList();
         String data;
@@ -61,7 +60,6 @@ public class PopularPathwaysController {
 
         ModelAndView mav = new ModelAndView("index");
         File jsonFoamtreeFile = popularPathwaysService.findFoamtreeFileByYear(year);
-
         List<String> yearList= popularPathwaysService.getYearList();
 
         String data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
