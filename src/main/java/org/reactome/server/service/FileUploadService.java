@@ -24,7 +24,7 @@ public class FileUploadService {
     public File saveLogFileToServer(MultipartFile file, int year) throws IOException {
 
         File serverFile = null;
-        String UPLOADED_LOG_FOLDER = popularPathwaysService.getPopularPathwayFolder() + "/" + "log";
+        String UPLOADED_LOG_FOLDER = popularPathwaysService.getLogDir();
 
         InputStream multipleFileStream = file.getInputStream();
         BufferedReader brFile = new BufferedReader(new InputStreamReader(multipleFileStream));

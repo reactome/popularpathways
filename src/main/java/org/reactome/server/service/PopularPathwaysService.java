@@ -33,9 +33,11 @@ public class PopularPathwaysService {
     private AdvancedDatabaseObjectService advancedDatabaseObjectService;
     private LogDataCSVParser logDataCSVParser;
     private FileUploadService fileUploadService;
-    private static String popularPathwayFolder;
     private Map<File, File> AVAILABLE_FILES;
     private Map<String, Integer> pathwayAge;
+    private static String popularPathwayFolder;
+    private static String jsonDir;
+    private static String logDir;
 
 
     @Autowired
@@ -58,14 +60,25 @@ public class PopularPathwaysService {
         this.fileUploadService = fileUploadService;
     }
 
+    public PopularPathwaysService(@Value("${popularpathway.folder}") String folder) {
+        popularPathwayFolder = folder;
+        jsonDir = popularPathwayFolder + "/" + "json";
+        logDir = popularPathwayFolder + "/" + "log";
+        getAvailableFiles();
+    }
+
     public String getPopularPathwayFolder() {
         return popularPathwayFolder;
     }
 
-    public PopularPathwaysService(@Value("${popularpathway.folder}") String folder) {
-        popularPathwayFolder = folder;
-        getAvailableFiles();
+    public String getJsonDir() {
+        return jsonDir;
     }
+
+    public String getLogDir() {
+        return logDir;
+    }
+
 
     /**
      * get available files on the server, to avoid generate the same json file when upload an existing log file
@@ -105,7 +118,7 @@ public class PopularPathwaysService {
 
         Map<File, File> logFilesAndJsonFiles = getAvailableFiles();
 
-        File logFile = new File(popularPathwayFolder + "/" + "log" + "/" + year + "/" + "HSA-hits-" + year + ".csv");
+        File logFile = new File(logDir + "/" + year + "/" + "HSA-hits-" + year + ".csv");
 
         if (logFilesAndJsonFiles.containsKey(logFile)) {
             foamtreeJsonFile = logFilesAndJsonFiles.get(logFile);
@@ -165,7 +178,7 @@ public class PopularPathwaysService {
         List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(logFileResult, ageMap, foamtrees);
 
         // get path
-        String outputPath = popularPathwayFolder + "/" + "json" + "/" + year;
+        String outputPath = jsonDir + "/" + year;
         File dirJson = new File(outputPath);
         if (!dirJson.exists()) {
             dirJson.mkdirs();
@@ -188,13 +201,8 @@ public class PopularPathwaysService {
 
         Map<File, File> fileMatchMap = new HashMap<>();
 
-        String csvPath = popularPathwayFolder + "/" + "log";
-        File logDir = new File(csvPath);
-        String jsonPath = popularPathwayFolder + "/" + "json";
-        File jsonDir = new File(jsonPath);
-
-        Collection<File> csvFiles = FileUtils.listFiles(logDir, new String[]{"csv"}, true);
-        Collection<File> jsonFiles = FileUtils.listFiles(jsonDir, new String[]{"json"}, true);
+        Collection<File> csvFiles = FileUtils.listFiles(new File(logDir), new String[]{"csv"}, true);
+        Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonDir), new String[]{"json"}, true);
 
         for (File csvFile : csvFiles) {
             for (File jsonFile : jsonFiles) {
@@ -250,20 +258,25 @@ public class PopularPathwaysService {
      * @return the last modified foamtree json file
      */
     public File getLastModifiedFile() {
-        String jsonPath = popularPathwayFolder + "/" + "json";
-        Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonPath), new String[]{"json"}, true);
+        Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonDir), new String[]{"json"}, true);
         List<File> sortJsonFiles = jsonFiles.stream().sorted(Comparator.comparingLong(File::lastModified).reversed()).collect(Collectors.toList());
         return sortJsonFiles.get(0);
     }
 
     /**
      * get lasted file from foamtree json folder which is close to current date time
+     *
      * @return the latest foamtree json file
      */
     public File getLastedYearlyJsonFile() {
-        String jsonPath = popularPathwayFolder + "/" + "json";
-        Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonPath), new String[]{"json"}, true);
+        Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonDir), new String[]{"json"}, true);
         List<File> sortJsonFiles = jsonFiles.stream().sorted(Comparator.comparing(File::getName).reversed()).collect(Collectors.toList());
         return sortJsonFiles.get(0);
+    }
+
+    public List<String> getYearList() {
+        Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonDir), new String[]{"json"}, true);
+        List<String> yearList = jsonFiles.stream().map(file -> file.getName().replaceAll("\\D+", "")).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        return yearList;
     }
 }
