@@ -1,4 +1,4 @@
-<%--
+<%@ page import="java.io.IOException" %><%--
   Created by IntelliJ IDEA.
   User: cgong
   Date: 12/02/2020
@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<script src="jQuery/jquery-3.4.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/jQuery/jquery-3.4.1.min.js"></script>
 <!-- Include Bootstrap -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -92,7 +92,7 @@
 </div>
 <script>
 
-    // Add the following code if you want the name of the file appear on select
+    // make the name of the file appear on select
     $(".custom-file-input").on("change", function () {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
