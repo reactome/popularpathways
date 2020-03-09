@@ -28,10 +28,12 @@
 </head>
 <body>
 <!-- Include FoamTree implementation. -->
-<script src="foamtree/carrotsearch.foamtree.js"></script>
-<script src="jQuery/jquery-3.4.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/foamtree/carrotsearch.foamtree.js"></script>
+<script src="${pageContext.request.contextPath}/jQuery/jquery-3.4.1.min.js"></script>
 
 <!-- Include Bootstrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
@@ -179,7 +181,23 @@
 
 <div class="d-flex d-flex justify-content-around">
     <span>Year: ${year}</span>
+
+    <!-- Dropdown button -->
+    <div class="btn-group">
+        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+            Available Yearly Logs
+        </button>
+        <div class="dropdown-menu">
+            <c:forEach items="${yearList}" var="item">
+                <a class="dropdown-item" href="${pageContext.request.contextPath}/load/${item}">${item}</a>
+            </c:forEach>
+        </div>
+    </div>
+
     <a href="${pageContext.request.contextPath}/upload" class="btn btn-outline-primary btn-sm">Upload</a>
+
 </div>
 
 </body>
