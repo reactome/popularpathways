@@ -39,12 +39,16 @@ public class FileUploadController {
         // get foamtreeJosnFile if doesn't exists then create it
         File jsonFoamtreeFile = popularPathwaysService.getJsonFoamtreeFile(file, year);
 
-        String data = null;
+        // get available Year list
+        List<String> yearList= popularPathwaysService.getYearList();
+
+        String data;
         if (jsonFoamtreeFile != null) {
             // convert file to String
             data = FileUtils.readFileToString(jsonFoamtreeFile, String.valueOf(StandardCharsets.UTF_8));
             mav.addObject("data", data);
             mav.addObject("year", year);
+            mav.addObject("yearList", yearList);
         } else {
             mav = new ModelAndView("uploadlog");
             mav.addObject("errormsg", "File is wrong! Please check your file and try again.");
