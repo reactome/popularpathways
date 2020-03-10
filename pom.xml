@@ -16,16 +16,6 @@
         <url>http://www.ebi.ac.uk/</url>
     </organization>
 
-    <developers>
-        <developer>
-            <id>gviteri</id>
-            <name>Guilherme S Viteri</name>
-            <email>gviteri@ebi.ac.uk</email>
-            <organization>http://www.ebi.ac.uk/</organization>
-        </developer>
-
-    </developers>
-
     <properties>
         <deploymentPath>/</deploymentPath>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,7 +26,6 @@
         <jsp.version>2.1</jsp.version>
         <jstl.version>1.2</jstl.version>
         <jackson.version>2.9.4</jackson.version>
-        <swagger.version>2.7.0</swagger.version>
         <lang.version>3.6</lang.version>
         <activation.version>1.1.1</activation.version>
         <kryo.version>2.22</kryo.version>
@@ -54,8 +43,6 @@
         <maven.info.report.version>2.8.1</maven.info.report.version>
         <pmd.version>3.6</pmd.version>
 
-        <hamcrest.library.version>2.2</hamcrest.library.version>
-        <json.path.version>2.4.0</json.path.version>
     </properties>
 
     <dependencies>
@@ -91,28 +78,11 @@
             <artifactId>jstl</artifactId>
             <version>${jstl.version}</version>
         </dependency>
-        <!-- Jackson JSON Processor -->
+        <!--Jackson JSON Processor-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
-        </dependency>
-        <!-- Swagger for API Documentation -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
         </dependency>
 
         <!--Util-->
@@ -123,39 +93,24 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>${activation.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>catalina</artifactId>
             <version>6.0.53</version>
             <scope>provided</scope>
         </dependency>
 
-
-        <!-- CSV parser -->
+        <!--CSV parser-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>${commons.csv.version}</version>
         </dependency>
 
-        <!-- File uploader-->
+        <!--File uploader-->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>${commons.fileupload}</version>
-        </dependency>
-
-
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
