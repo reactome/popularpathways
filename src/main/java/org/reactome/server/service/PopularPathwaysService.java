@@ -264,16 +264,21 @@ public class PopularPathwaysService {
     }
 
     /**
-     * get lasted file from foamtree json folder which is close to current date time
+     * get latest json file from foamtree json folder which is close to current date time
      *
      * @return the latest foamtree json file
      */
-    public File getLastedYearlyJsonFile() {
+    public File getLatestYearlyJsonFile() {
         Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonDir), new String[]{"json"}, true);
         List<File> sortJsonFiles = jsonFiles.stream().sorted(Comparator.comparing(File::getName).reversed()).collect(Collectors.toList());
         return sortJsonFiles.get(0);
     }
 
+    /**
+     * get a list of year to apply to dropdown menu
+     *
+     * @return a list of available year
+     */
     public List<String> getYearList() {
         Collection<File> jsonFiles = FileUtils.listFiles(new File(jsonDir), new String[]{"json"}, true);
         List<String> yearList = jsonFiles.stream().map(file -> file.getName().replaceAll("\\D+", "")).sorted(Comparator.reverseOrder()).collect(Collectors.toList());

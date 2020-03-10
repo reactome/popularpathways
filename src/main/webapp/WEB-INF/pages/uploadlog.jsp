@@ -78,7 +78,6 @@
     <div class="d-flex justify-content-around">
         <p>CSV File</p>
         <p>TXT File</p>
-
     </div>
     <div class="d-flex justify-content-around">
         <img alt="Bootstrap Image Preview"
