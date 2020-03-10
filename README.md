@@ -29,12 +29,7 @@ Please refer to Maven Profile [Guideline](http://maven.apache.org/guides/introdu
 <profile>
     <id>reactome</id>
     <properties>
-        <mail.host>localhost</mail.host>
-        <mail.port>7474</mail.port>
-        <mail.username>username</mail.username>
-        <mail.password>password</mail.password>
-        <mail.enable.auth>true</mail.enable.auth>
-
+ 
         <!-- Neo4J Configuration -->
         <neo4j.host>localhost</neo4j.host>
         <neo4j.port>7474</neo4j.port>
@@ -61,7 +56,7 @@ INFO: Starting ProtocolHandler ["http-bio-8686"]
 
 #### Result
 
-* Access your local [installation](http://localhost:8686/)
+* Access your local [installation](http://localhost:8686/) and [upload](http://localhost:8686/upload) your log file.
 
-<img width="900" alt="Reacfoam_dev" src="https://user-images.githubusercontent.com/6442828/75920976-3e164000-5e58-11ea-8cd4-a9d66056736a.png">
+<img width="900" alt="Reacfoam_dev" src="https://user-images.githubusercontent.com/6442828/76324276-ae501600-62dd-11ea-8db6-929056649151.png">
 
