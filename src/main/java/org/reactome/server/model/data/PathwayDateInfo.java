@@ -1,20 +1,23 @@
 package org.reactome.server.model.data;
 
 
+import org.neo4j.driver.Record;
+import org.reactome.server.graph.domain.result.CustomQuery;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 
-public class PathwayDateInfo {
+public class PathwayDateInfo implements CustomQuery  {
     private String stId;
     private String lastAuthored;
     private String lastReviewed;
     private String releaseDate;
     private Integer age;
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-    private DateTimeFormatter releaseDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+    private final DateTimeFormatter releaseDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public String getStId() {
         return stId;
@@ -69,7 +72,6 @@ public class PathwayDateInfo {
                 lastAuthored != null && !lastAuthored.isEmpty()) {
             LocalDate authored = LocalDate.parse(lastAuthored, formatter);
             LocalDate reviewed = LocalDate.parse(lastReviewed, formatter);
-
             if (reviewed.isAfter(authored)) {
                 finalDate = reviewed;
             } else {
@@ -86,5 +88,16 @@ public class PathwayDateInfo {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    @Override
+    public CustomQuery build(Record r) {
+        PathwayDateInfo pathwayDateInfo = new PathwayDateInfo();
+        pathwayDateInfo.setStId(r.get("stId").asString(null));
+        pathwayDateInfo.setLastAuthored(r.get("lastAuthored").asString(null));
+        pathwayDateInfo.setLastReviewed(r.get("lastReviewed").asString(null));
+        pathwayDateInfo.setReleaseDate(r.get("releaseDate").asString(null));
+        pathwayDateInfo.setAge(getAge(r.get("lastAuthored").asString(null), r.get("lastAuthored").asString(null), r.get("releaseDate").asString(null)));
+        return pathwayDateInfo;
     }
 }

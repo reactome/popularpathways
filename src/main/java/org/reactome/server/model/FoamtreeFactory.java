@@ -12,9 +12,8 @@ import java.util.Map;
 
 public class FoamtreeFactory {
 
-    private Map<Long, Foamtree> map = new HashMap<>();
-
-    private List<Foamtree> foamtrees = new ArrayList<>();
+    private final Map<Long, Foamtree> map = new HashMap<>();
+    private final List<Foamtree> foamtrees = new ArrayList<>();
 
     public FoamtreeFactory(TopLevelPathwayService tlpService) {
         for (Pathway pNode : tlpService.getTopLevelPathways("Homo sapiens")) {
