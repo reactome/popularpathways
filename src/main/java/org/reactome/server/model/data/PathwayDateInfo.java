@@ -53,6 +53,17 @@ public class PathwayDateInfo implements CustomQuery  {
 
     public Integer getAge(String lastAuthored, String lastReviewed, String releasedDate) {
 
+        // wired: data time format is 2019-02-21 16:47:28.0 on the server
+        if (lastAuthored != null && lastAuthored.contains(".")) {
+            lastAuthored = lastAuthored.substring(0, lastAuthored.indexOf("."));
+        }
+        if (lastReviewed != null && lastReviewed.contains(".")) {
+            lastReviewed = lastReviewed.substring(0, lastReviewed.indexOf("."));
+        }
+        if (releasedDate !=null && releasedDate.contains(".")) {
+            releasedDate = releasedDate.substring(0, releasedDate.indexOf("."));
+        }
+
         LocalDate finalDate = LocalDate.now();
 
         // lastAuthored and lastReviewed are null
