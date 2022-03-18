@@ -135,13 +135,13 @@
                         vars.groupColor = "#4169E1";
                         break;
                     case age >= 14 && age < 16:
-                        vars.groupColor = "#0000FF";
+                        vars.groupColor = "#3e3ee5";
                         break;
                     case age >= 16 && age < 18:
-                        vars.groupColor = "#00008B";
+                        vars.groupColor = "#3838e7";
                         break;
                     case age >= 18 && age < 20:
-                        vars.groupColor = "#191970";
+                        vars.groupColor = "#2424de";
                         break;
                     case age >= 20 && age < 22:
                         vars.groupColor = "#4B0082";
