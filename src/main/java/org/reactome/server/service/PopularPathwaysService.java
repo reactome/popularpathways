@@ -67,15 +67,15 @@ public class PopularPathwaysService {
         getAvailableFiles();
     }
 
-    public String getPopularPathwayFolder() {
+    public static String getPopularPathwayFolder() {
         return popularPathwayFolder;
     }
 
-    public String getJsonDir() {
+    public static String getJsonDir() {
         return jsonDir;
     }
 
-    public String getLogDir() {
+    public static String getLogDir() {
         return logDir;
     }
 

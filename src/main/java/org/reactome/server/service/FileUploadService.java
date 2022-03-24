@@ -4,6 +4,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,20 +13,14 @@ import java.io.*;
 
 @SuppressWarnings("WeakerAccess")
 @Service
+@Lazy
 public class FileUploadService {
-
-    private PopularPathwaysService popularPathwaysService;
-
-    @Autowired
-    public void setPopularPathwaysService(PopularPathwaysService popularPathwaysService) {
-        this.popularPathwaysService = popularPathwaysService;
-    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public File saveLogFileToServer(MultipartFile file, int year) throws IOException {
 
         File serverFile = null;
-        String UPLOADED_LOG_FOLDER = popularPathwaysService.getLogDir();
+        String UPLOADED_LOG_FOLDER = PopularPathwaysService.getLogDir();
 
         InputStream multipleFileStream = file.getInputStream();
         BufferedReader brFile = new BufferedReader(new InputStreamReader(multipleFileStream));
