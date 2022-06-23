@@ -36,7 +36,7 @@ public class HierarchyGeneratorController {
     @ResponseBody
     public String getFile() throws Exception {
 
-        Collection<PathwayBrowserNode> pathwayBrowserNodes = eventHierarchyService.getEventHierarchy("9606").stream().sorted().collect(Collectors.toList());
+        Collection<PathwayBrowserNode> pathwayBrowserNodes = eventHierarchyService.getEventHierarchy("9606", false).stream().sorted().collect(Collectors.toList());
         Collection<PathwayNode> pathwayNodes = new ArrayList<>();
 
         for (PathwayBrowserNode p : pathwayBrowserNodes) {
