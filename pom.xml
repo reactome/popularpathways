@@ -4,43 +4,30 @@
     <groupId>org.reactome.server.service</groupId>
     <artifactId>popular-pathways</artifactId>
     <packaging>war</packaging>
-    <version>1.1.3_SNAPSHOT</version>
+    <version>1.1.4</version>
     <name>popular-pathways</name>
+
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.1</version>
+        <groupId>org.reactome.server</groupId>
+        <artifactId>reactome-parent</artifactId>
+        <version>1.0.0</version>
     </parent>
+
     <organization>
         <name>The European Bioinformatics Institute</name>
-        <url>http://www.ebi.ac.uk/</url>
+        <url>https://www.ebi.ac.uk/</url>
     </organization>
+
     <properties>
+
         <deploymentPath>/</deploymentPath>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>11</jdk.version>
-
-        <graph.core>2.0.4</graph.core>
-
-        <servlet.version>4.0.1</servlet.version>
-        <javax.servlet.jsp-api.version>2.3.3</javax.servlet.jsp-api.version>
-        <jstl.version>1.2</jstl.version>
-        <jackson.version>2.13.1</jackson.version>
-        <lang.version>3.12.0</lang.version>
-        <commons.csv.version>1.9.0</commons.csv.version>
-        <commons.fileupload>1.4</commons.fileupload>
-        <codec.version>1.15</codec.version>
-        <jackrabbit.version>2.10</jackrabbit.version>
-
-        <maven.compiler.version>3.8.1</maven.compiler.version>
-        <maven.resources.version>3.2.0</maven.resources.version>
-        <maven.site.version>3.9.1</maven.site.version>
     </properties>
+
     <dependencies>
+        <!--Reactome-->
         <dependency>
             <groupId>org.reactome.server.graph</groupId>
             <artifactId>graph-core</artifactId>
-            <version>${graph.core}</version>
         </dependency>
         <!--Spring Boot-->
         <dependency>
@@ -71,47 +58,39 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>${javax.servlet.jsp-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>${jstl.version}</version>
         </dependency>
         <!--Jackson JSON Processor-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <!--Util-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${lang.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>${codec.version}</version>
         </dependency>
         <!--CSV parser-->
         <dependency>
@@ -123,20 +102,18 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>${commons.fileupload}</version>
         </dependency>
         <!--Hierarchy generator-->
         <dependency>
             <groupId>com.github.opendevl</groupId>
             <artifactId>json2flat</artifactId>
-            <version>1.0.3</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.9.0</version>
         </dependency>
     </dependencies>
+
     <build>
         <finalName>PopularPathways</finalName>
         <resources>
@@ -158,8 +135,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -214,20 +191,5 @@
             </snapshots>
         </repository>
     </repositories>
-    <!--Configures the distribution to nexus repository -->
-    <distributionManagement>
-        <!-- EBI repo -->
-        <repository>
-            <id>pst-release</id>
-            <name>EBI Nexus Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-        </repository>
-        <!-- EBI SNAPSHOT repo -->
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>pst-snapshots</id>
-            <name>EBI Nexus Snapshots Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+
 </project>
