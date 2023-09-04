@@ -67,7 +67,7 @@ public class PathwayDateInfo implements CustomQuery  {
         LocalDate finalDate = LocalDate.now();
 
         // lastAuthored and lastReviewed are null
-        if (lastAuthored == null && lastReviewed == null) {
+        if (releasedDate != null &&lastAuthored == null && lastReviewed == null) {
             finalDate = LocalDate.parse(releasedDate, releaseDateFormatter);
         }
 
