@@ -16,8 +16,7 @@ public class PathwayDateInfo implements CustomQuery  {
     private String releaseDate;
     private Integer age;
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final DateTimeFormatter releaseDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public String getStId() {
         return stId;
@@ -51,43 +50,28 @@ public class PathwayDateInfo implements CustomQuery  {
         this.releaseDate = releasedDate;
     }
 
-    public Integer getAge(String lastAuthored, String lastReviewed, String releasedDate) {
 
-        // wired: data time format is 2019-02-21 16:47:28.0 on the server
-        if (lastAuthored != null && lastAuthored.contains(".")) {
-            lastAuthored = lastAuthored.substring(0, lastAuthored.indexOf("."));
-        }
-        if (lastReviewed != null && lastReviewed.contains(".")) {
-            lastReviewed = lastReviewed.substring(0, lastReviewed.indexOf("."));
-        }
-        if (releasedDate !=null && releasedDate.contains(".")) {
-            releasedDate = releasedDate.substring(0, releasedDate.indexOf("."));
-        }
+    public Integer getAge(String lastAuthored, String lastReviewed, String released) {
 
-        LocalDate finalDate = LocalDate.now();
+        LocalDate lastAuthoredDate = null;
+        LocalDate lastReviewedDate = null;
+        LocalDate releasedDate = null;
 
-        // lastAuthored and lastReviewed are null
-        if (releasedDate != null &&lastAuthored == null && lastReviewed == null) {
-            finalDate = LocalDate.parse(releasedDate, releaseDateFormatter);
+
+        if (lastAuthored != null) {
+            lastAuthoredDate = lastAuthored.contains(" ") ? LocalDate.parse(lastAuthored.substring(0, lastAuthored.indexOf(" ")), formatter) : LocalDate.parse(lastAuthored, formatter);
+        }
+        if (lastReviewed != null && lastReviewed.contains(" ")) {
+            lastReviewedDate = lastReviewed.contains(" ")? LocalDate.parse(lastReviewed.substring(0, lastReviewed.indexOf(" ")), formatter): LocalDate.parse(lastReviewed, formatter);
+        }
+        if (released !=null) {
+            releasedDate = released.contains(" ") ? LocalDate.parse(released.substring(0, released.indexOf(" ")), formatter): LocalDate.parse(released, formatter);
         }
 
-        if (lastAuthored != null && !lastAuthored.isEmpty() && lastReviewed == null) {
-            finalDate = LocalDate.parse(lastAuthored, formatter);
-        }
+        LocalDate finalDate = getLatest(getLatest(lastAuthoredDate, lastReviewedDate), releasedDate);
 
-        if (lastReviewed != null && !lastReviewed.isEmpty() && lastAuthored == null) {
-            finalDate = LocalDate.parse(lastReviewed, formatter);
-        }
-
-        if (lastReviewed != null && !lastReviewed.isEmpty() &&
-                lastAuthored != null && !lastAuthored.isEmpty()) {
-            LocalDate authored = LocalDate.parse(lastAuthored, formatter);
-            LocalDate reviewed = LocalDate.parse(lastReviewed, formatter);
-            if (reviewed.isAfter(authored)) {
-                finalDate = reviewed;
-            } else {
-                finalDate = authored;
-            }
+        if (finalDate == null) {
+            finalDate = LocalDate.now();
         }
 
         LocalDate start = LocalDate.of(finalDate.getYear(), finalDate.getMonth(), finalDate.getDayOfMonth());
@@ -100,6 +84,15 @@ public class PathwayDateInfo implements CustomQuery  {
     public void setAge(Integer age) {
         this.age = age;
     }
+
+    /**
+     * Safely compare two dates, null being considered "greater" than a Date
+     * @return the earliest of the two
+     */
+    public static LocalDate getLatest(LocalDate dateA, LocalDate dateB) {
+        return dateA == null ? dateB : (dateB == null ? dateA : (dateA.isAfter(dateB) ? dateA : dateB));
+    }
+
 
     @Override
     public CustomQuery build(Record r) {
