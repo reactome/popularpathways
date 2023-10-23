@@ -16,7 +16,6 @@ public class PathwayDateInfo implements CustomQuery  {
     private String releaseDate;
     private Integer age;
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public String getStId() {
         return stId;
@@ -53,31 +52,15 @@ public class PathwayDateInfo implements CustomQuery  {
 
     public Integer getAge(String lastAuthored, String lastReviewed, String released) {
 
-        LocalDate lastAuthoredDate = null;
-        LocalDate lastReviewedDate = null;
-        LocalDate releasedDate = null;
+        LocalDate lastAuthoredDate = lastAuthored != null ? parseDate(lastAuthored) : null;
+        LocalDate lastReviewedDate = lastReviewed != null ? parseDate(lastReviewed) : null;
+        LocalDate releasedDate = released != null ? parseDate(released) : null;
 
-
-        if (lastAuthored != null) {
-            lastAuthoredDate = lastAuthored.contains(" ") ? LocalDate.parse(lastAuthored.substring(0, lastAuthored.indexOf(" ")), formatter) : LocalDate.parse(lastAuthored, formatter);
-        }
-        if (lastReviewed != null && lastReviewed.contains(" ")) {
-            lastReviewedDate = lastReviewed.contains(" ")? LocalDate.parse(lastReviewed.substring(0, lastReviewed.indexOf(" ")), formatter): LocalDate.parse(lastReviewed, formatter);
-        }
-        if (released !=null) {
-            releasedDate = released.contains(" ") ? LocalDate.parse(released.substring(0, released.indexOf(" ")), formatter): LocalDate.parse(released, formatter);
-        }
-
-        LocalDate finalDate = getLatest(getLatest(lastAuthoredDate, lastReviewedDate), releasedDate);
-
-        if (finalDate == null) {
-            finalDate = LocalDate.now();
-        }
+        LocalDate finalDate = getLatest(getLatest(lastAuthoredDate, lastReviewedDate), releasedDate) != null ? getLatest(getLatest(lastAuthoredDate, lastReviewedDate), releasedDate) : LocalDate.now();
 
         LocalDate start = LocalDate.of(finalDate.getYear(), finalDate.getMonth(), finalDate.getDayOfMonth());
         LocalDate end = LocalDate.now();
         age = Math.toIntExact(ChronoUnit.YEARS.between(start, end));
-
         return age;
     }
 
@@ -91,6 +74,11 @@ public class PathwayDateInfo implements CustomQuery  {
      */
     public static LocalDate getLatest(LocalDate dateA, LocalDate dateB) {
         return dateA == null ? dateB : (dateB == null ? dateA : (dateA.isAfter(dateB) ? dateA : dateB));
+    }
+
+    public static LocalDate parseDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return date.contains(" ") ? LocalDate.parse(date.substring(0, date.indexOf(" ")), formatter) : LocalDate.parse(date, formatter);
     }
 
 
