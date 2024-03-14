@@ -94,7 +94,10 @@
             wireframeDrawMaxDuration: 4000,
 
             // Color of the outline stroke for the selected groups
-            groupSelectionOutlineColor: "#E86365"
+            groupSelectionOutlineColor: "#E86365",
+
+            // Maximum group label size in pixels whose label to show in the title bar.
+            maxLabelSizeForTitleBar: 500
         });
 
         // add weight value to label
