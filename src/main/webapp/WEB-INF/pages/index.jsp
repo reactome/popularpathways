@@ -147,6 +147,9 @@
                         vars.groupColor = "#2424de";
                         break;
                     case age >= 20 && age < 22:
+                        vars.groupColor = "#1414a9";
+                        break;
+                    case age >= 22 && age < 24:
                         vars.groupColor = "#4B0082";
                         break;
                     default:
