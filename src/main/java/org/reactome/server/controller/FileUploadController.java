@@ -36,7 +36,7 @@ public class FileUploadController {
         calendar.setTime(date);
         int year = calendar.get(YEAR);
 
-        // get foamtreeJosnFile if doesn't exists then create it
+        // get foamtreeJosnFile if it doesn't exist then create it
         File jsonFoamtreeFile = popularPathwaysService.getJsonFoamtreeFile(file, year);
 
         // get available Year list
