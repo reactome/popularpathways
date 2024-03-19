@@ -5,23 +5,23 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.service.AdvancedDatabaseObjectService;
+import org.reactome.server.graph.service.TopLevelPathwayService;
 import org.reactome.server.model.FoamtreeFactory;
 import org.reactome.server.model.FoamtreeGenerator;
 import org.reactome.server.model.data.Foamtree;
-import org.reactome.server.graph.service.TopLevelPathwayService;
 import org.reactome.server.model.data.PathwayDateInfo;
-import org.reactome.server.util.LogDataCSVParser;
 import org.reactome.server.util.JsonSaver;
+import org.reactome.server.util.LogDataCSVParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -101,12 +101,30 @@ public class PopularPathwaysService {
     /**
      * @return a map stId and age as key value pair
      */
-    public Map<String, Integer> getPathwayAge() {
-
+    public Map<String, Integer> getPathwayAge(int year) {
         if (pathwayAge == null) {
-            pathwayAge = generatePathwayAge();
-        }
+            // todo: the age is calculated by current time in database, however, the age should be calculated with year value from  user input, better way to process it
+            pathwayAge = refactorPathwayAge(generatePathwayAge(), year);
+           // pathwayAge = generatePathwayAge();
+    ;    }
         return pathwayAge;
+    }
+
+    /** *
+     *  This methis is used to calculate age based on given year,
+     * @param idAndAge stId and age map, age is calculate by comparing now and the data in database
+     * @param year given year
+     * @return new stId and age map
+     */
+    public Map<String, Integer> refactorPathwayAge(Map<String, Integer> idAndAge, int year){
+        LocalDate now = LocalDate.now();
+        Map<String, Integer> updatedMap = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : idAndAge.entrySet()) {
+            Integer age = entry.getValue();
+            int updatedAge = age != -1 ? age - (now.getYear() - year) + 1 : -1;
+            updatedMap.put(entry.getKey(), updatedAge);
+        }
+        return updatedMap;
     }
 
     /**
@@ -174,7 +192,7 @@ public class PopularPathwaysService {
         FoamtreeGenerator foamtreeGenerator = new FoamtreeGenerator();
 
         // get stId-age pair
-        Map<String, Integer> ageMap = getPathwayAge();
+        Map<String, Integer> ageMap = getPathwayAge(year);
         List<Foamtree> foamtreesWithLogData = foamtreeGenerator.getResults(logFileResult, ageMap, foamtrees);
 
         // get path

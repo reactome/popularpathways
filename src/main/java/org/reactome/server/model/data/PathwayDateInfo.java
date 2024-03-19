@@ -6,7 +6,6 @@ import org.reactome.server.graph.domain.result.CustomQuery;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 
 
 public class PathwayDateInfo implements CustomQuery  {
@@ -58,9 +57,8 @@ public class PathwayDateInfo implements CustomQuery  {
 
         LocalDate finalDate = getLatest(getLatest(lastAuthoredDate, lastReviewedDate), releasedDate) != null ? getLatest(getLatest(lastAuthoredDate, lastReviewedDate), releasedDate) : LocalDate.now();
 
-        LocalDate start = LocalDate.of(finalDate.getYear(), finalDate.getMonth(), finalDate.getDayOfMonth());
-        LocalDate end = LocalDate.now();
-        age = Math.toIntExact(ChronoUnit.YEARS.between(start, end));
+        LocalDate current = LocalDate.now();
+        age = current.getYear() - finalDate.getYear();
         return age;
     }
 
