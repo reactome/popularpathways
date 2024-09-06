@@ -8,8 +8,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 
-public class PathwayDateInfo implements CustomQuery  {
+public class PathwayDateInfo implements CustomQuery {
     private String stId;
+    private String lastUpdated;
     private String lastAuthored;
     private String lastReviewed;
     private String releaseDate;
@@ -48,8 +49,21 @@ public class PathwayDateInfo implements CustomQuery  {
         this.releaseDate = releasedDate;
     }
 
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
 
-    public Integer getAge(String lastAuthored, String lastReviewed, String released) {
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Integer getAge(String lastAuthored, String lastReviewed, String released, String lastUpdated) {
+
+        if (lastUpdated != null) {
+            LocalDate lastUpdatedDate = parseDate(lastUpdated);
+            LocalDate current = LocalDate.now();
+            return age = current.getYear() - lastUpdatedDate.getYear();
+        }
 
         LocalDate lastAuthoredDate = lastAuthored != null ? parseDate(lastAuthored) : null;
         LocalDate lastReviewedDate = lastReviewed != null ? parseDate(lastReviewed) : null;
@@ -68,13 +82,14 @@ public class PathwayDateInfo implements CustomQuery  {
 
     /**
      * Safely compare two dates, null being considered "greater" than a Date
+     *
      * @return the earliest of the two
      */
     public static LocalDate getLatest(LocalDate dateA, LocalDate dateB) {
         return dateA == null ? dateB : (dateB == null ? dateA : (dateA.isAfter(dateB) ? dateA : dateB));
     }
 
-    public static LocalDate parseDate(String date){
+    public static LocalDate parseDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return date.contains(" ") ? LocalDate.parse(date.substring(0, date.indexOf(" ")), formatter) : LocalDate.parse(date, formatter);
     }
@@ -87,7 +102,8 @@ public class PathwayDateInfo implements CustomQuery  {
         pathwayDateInfo.setLastAuthored(r.get("lastAuthored").asString(null));
         pathwayDateInfo.setLastReviewed(r.get("lastReviewed").asString(null));
         pathwayDateInfo.setReleaseDate(r.get("releaseDate").asString(null));
-        pathwayDateInfo.setAge(getAge(r.get("lastAuthored").asString(null), r.get("lastAuthored").asString(null), r.get("releaseDate").asString(null)));
+        pathwayDateInfo.setLastUpdated(r.get("lastUpdatedDate").asString(null));
+        pathwayDateInfo.setAge(getAge(r.get("lastAuthored").asString(null), r.get("lastAuthored").asString(null), r.get("releaseDate").asString(null), r.get("lastUpdatedDate").asString(null)));
         return pathwayDateInfo;
     }
 }

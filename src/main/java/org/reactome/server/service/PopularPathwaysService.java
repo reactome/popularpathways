@@ -105,18 +105,20 @@ public class PopularPathwaysService {
         if (pathwayAge == null) {
             // todo: the age is calculated by current time in database, however, the age should be calculated with year value from  user input, better way to process it
             pathwayAge = refactorPathwayAge(generatePathwayAge(), year);
-           // pathwayAge = generatePathwayAge();
-    ;    }
+            // pathwayAge = generatePathwayAge();
+            ;
+        }
         return pathwayAge;
     }
 
-    /** *
-     *  This methis is used to calculate age based on given year,
+    /**
+     * This methis is used to calculate age based on given year,
+     *
      * @param idAndAge stId and age map, age is calculate by comparing now and the data in database
-     * @param year given year
+     * @param year     given year
      * @return new stId and age map
      */
-    public Map<String, Integer> refactorPathwayAge(Map<String, Integer> idAndAge, int year){
+    public Map<String, Integer> refactorPathwayAge(Map<String, Integer> idAndAge, int year) {
         LocalDate now = LocalDate.now();
         Map<String, Integer> updatedMap = new HashMap<>();
         for (Map.Entry<String, Integer> entry : idAndAge.entrySet()) {
@@ -246,11 +248,11 @@ public class PopularPathwaysService {
             String query = "MATCH (p:Pathway{speciesName: 'Homo sapiens'})" +
                     "OPTIONAL MATCH (p) -[:authored]-(a:InstanceEdit)" +
                     "OPTIONAL MATCH (p) -[:reviewed]-(r:InstanceEdit)" +
-                    "RETURN p.stId AS stId, max(a.dateTime) AS lastAuthored, max(r.dateTime) AS lastReviewed, p.releaseDate AS releaseDate";
+                    "RETURN p.stId AS stId, max(a.dateTime) AS lastAuthored, max(r.dateTime) AS lastReviewed, p.releaseDate AS releaseDate, p.lastUpdatedDate AS lastUpdatedDate";
             Collection<PathwayDateInfo> pdis = advancedDatabaseObjectService.getCustomQueryResults(PathwayDateInfo.class, query);
 
             for (PathwayDateInfo pdi : pdis) {
-                Integer age = pdi.getAge(pdi.getLastAuthored(), pdi.getLastReviewed(), pdi.getReleaseDate());
+                Integer age = pdi.getAge(pdi.getLastAuthored(), pdi.getLastReviewed(), pdi.getReleaseDate(), pdi.getLastUpdated());
                 if (age != null) {
                     // save stId and age as key and value pair
                     pathwayAge.put(pdi.getStId(), age);
